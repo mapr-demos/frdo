@@ -1,0 +1,54 @@
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+legend {
+  margin: 20px 0 10px 0;
+}
+label {
+  font-weight: bold;
+}
+.renderjson-object {
+  border: 1px solid #c0c0c0;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  padding: 10px;
+  margin: 0 0 20px 20px;
+}
+.renderjson-key {
+  font-weight: bold;
+}
+.renderjson-value {
+  padding: 0 0 5px 10px;
+}
+
+.heatmap-meta {
+  text-align: center;
+  margin: 0 0 10pt 0;
+  padding: 2px;
+  border: 1px solid #e0e0e0;
+  width: 846px;
+}
+
+pre {
+  font-size: 80%;
+  margin: 0 0 25px 0;
+}
+footer {
+  margin: 2em 0 0 0;
+  text-align: justify;
+}
+
+#frdo-heatmap {
+  position:relative;
+  width: 850px;
+  height: 600px;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* to fix the maps control bug, see http://stackoverflow.com/questions/8879544/google-maps-zoom-control */
+#frdo-heatmap img {
+  max-width: none;
+}
