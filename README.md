@@ -19,6 +19,8 @@ The underlying ATM location data stems from the [OpenStreetMap](http://openstree
 
 ### Deployment
 
+Read the [deployment notes](doc/deploy-notes.md).
+
 ## Usage
 
 In the following, I describe the exact steps necessary to execute the demo.
