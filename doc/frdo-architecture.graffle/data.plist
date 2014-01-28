@@ -516,7 +516,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{113.49498860586405, 12.366250058664598}, {7.58673095703125, 100}}</string>
+			<string>{{113.49498861118786, 12.366252847204592}, {7.58673095703125, 100}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -587,7 +587,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{102.05471858740822, 12.38710476867336}, {7.58673095703125, 100}}</string>
+			<string>{{102.05471859178604, 12.387107086127713}, {7.58673095703125, 100}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -774,10 +774,10 @@
 				<key>Text</key>
 				<string>{\rtf1\ansi\ansicpg1252\cocoartf1265
 \cocoascreenfonts1{\fonttbl\f0\fswiss\fcharset0 LucidaConsole;}
-{\colortbl;\red255\green255\blue255;\red255\green255\blue255;}
+{\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\fs20 \cf2 2013-12-07T16-46-34473_to_2013-12-07T16-56-75473.dat\
+\f0\fs20 \cf1 2013-12-07T16-46-34473_to_2013-12-07T16-56-75473.dat\
 ...}</string>
 				<key>VerticalPad</key>
 				<integer>3</integer>
@@ -795,8 +795,8 @@
 			<integer>43534</integer>
 			<key>Points</key>
 			<array>
-				<string>{180.21518744524849, 480.10456335798318}</string>
-				<string>{106.70522499084474, 462.73792053759468}</string>
+				<string>{180.19967752774335, 480.14453397703227}</string>
+				<string>{106.70522499084474, 462.84200615205219}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -859,18 +859,17 @@
 				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
 				bmcBlIQBKy1zZXJ2ZSBzdGF0aWMgY29udGVudAphbmQg
 				aGVhdG1hcCBkYXRhCmFzIEpTT06GhAJpSQEtkoSEhAxO
-				U0RpY3Rpb25hcnkAlIQBaQSShJaWEE5TUGFyYWdyYXBo
-				U3R5bGWGkoSEhBdOU011dGFibGVQYXJhZ3JhcGhTdHls
-				ZQCEhBBOU1BhcmFncmFwaFN0eWxlAJSEBENDQFMAAISE
-				hAdOU0FycmF5AJSZDJKEhIQJTlNUZXh0VGFiAJSEAkNm
-				AByGkoSgnwA4hpKEoJ8AVIaShKCfAHCGkoSgnwCBjACG
-				koSgnwCBqACGkoSgnwCBxACGkoSgnwCB4ACGkoSgnwCB
-				/ACGkoSgnwCBGAGGkoSgnwCBNAGGkoSgnwCBUAGGhgCG
-				koSWlgdOU0NvbG9yhpKEhIQHTlNDb2xvcgCUhAFjAoQE
-				ZmZmZgCDiYiIPoMA//4+AYaShJaWBk5TRm9udIaShISE
-				Bk5TRm9udB6UmRyEBVsyOGNdBgAAABQAAAD//kgAZQBs
-				AHYAZQB0AGkAYwBhAIQBZgyhAKEBoQChAIaShJaWDk5T
-				T3JpZ2luYWxGb250hpKwhoY=
+				U0RpY3Rpb25hcnkAlIQBaQOShJaWB05TQ29sb3KGkoSE
+				hAdOU0NvbG9yAJSEAWMChARmZmZmAIOJiIg+gwD//j4B
+				hpKElpYQTlNQYXJhZ3JhcGhTdHlsZYaShISEEE5TUGFy
+				YWdyYXBoU3R5bGUAlIQEQ0NAUwAAhISEB05TQXJyYXkA
+				lJkMkoSEhAlOU1RleHRUYWIAlIQCQ2YAHIaShKKhADiG
+				koSioQBUhpKEoqEAcIaShKKhAIGMAIaShKKhAIGoAIaS
+				hKKhAIHEAIaShKKhAIHgAIaShKKhAIH8AIaShKKhAIEY
+				AYaShKKhAIE0AYaShKKhAIFQAYaGAIaShJaWBk5TRm9u
+				dIaShISEBk5TRm9udB6UmRyEBVsyOGNdBgAAABQAAAD/
+				/kgAZQBsAHYAZQB0AGkAYwBhAIQBZgybAJsBmwCbAIaG
+				hg==
 				</data>
 				<key>Text</key>
 				<string>{\rtf1\ansi\ansicpg1252\cocoartf1265
@@ -1360,96 +1359,6 @@ as JSON}</string>
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{92.860764634866385, 336.43214313909243}, {57.60921371208989, 56}}</string>
-					<key>Class</key>
-					<string>ShapedGraphic</string>
-					<key>FitText</key>
-					<string>Vertical</string>
-					<key>Flow</key>
-					<string>Resize</string>
-					<key>FontInfo</key>
-					<dict>
-						<key>Color</key>
-						<dict>
-							<key>b</key>
-							<string>0.422007</string>
-							<key>g</key>
-							<string>0.196932</string>
-							<key>r</key>
-							<string>0.0179538</string>
-						</dict>
-						<key>Font</key>
-						<string>Helvetica</string>
-						<key>Size</key>
-						<real>12</real>
-					</dict>
-					<key>ID</key>
-					<integer>43508</integer>
-					<key>Shape</key>
-					<string>Rectangle</string>
-					<key>Style</key>
-					<dict>
-						<key>fill</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-						<key>shadow</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-						<key>stroke</key>
-						<dict>
-							<key>Draws</key>
-							<string>NO</string>
-						</dict>
-					</dict>
-					<key>Text</key>
-					<dict>
-						<key>Pad</key>
-						<integer>0</integer>
-						<key>RTFD</key>
-						<data>
-						BAtzdHJlYW10eXBlZIHoA4QBQISE
-						hBJOU0F0dHJpYnV0ZWRTdHJpbmcA
-						hIQITlNPYmplY3QAhZKEhIQITlNT
-						dHJpbmcBlIQBKydocC1tYXByLTEK
-						aHAtbWFwci0yCmhwLW1hcHItMwpo
-						cC1tYXByLTSGhAJpSQEnkoSEhAxO
-						U0RpY3Rpb25hcnkAlIQBaQOShJaW
-						B05TQ29sb3KGkoSEhAdOU0NvbG9y
-						AJSEAWMChARmZmZmAIOJiIg+gwD/
-						/j4BhpKElpYQTlNQYXJhZ3JhcGhT
-						dHlsZYaShISEEE5TUGFyYWdyYXBo
-						U3R5bGUAlIQEQ0NAUwIAhISEB05T
-						QXJyYXkAlJkMkoSEhAlOU1RleHRU
-						YWIAlIQCQ2YAHIaShKKhADiGkoSi
-						oQBUhpKEoqEAcIaShKKhAIGMAIaS
-						hKKhAIGoAIaShKKhAIHEAIaShKKh
-						AIHgAIaShKKhAIH8AIaShKKhAIEY
-						AYaShKKhAIE0AYaShKKhAIFQAYaG
-						AIaShJaWBk5TRm9udIaShISEBk5T
-						Rm9udB6UmRyEBVsyOGNdBgAAABQA
-						AAD//kgAZQBsAHYAZQB0AGkAYwBh
-						AIQBZgybAJsBmwCbAIaGhg==
-						</data>
-						<key>Text</key>
-						<string>{\rtf1\ansi\ansicpg1252\cocoartf1265
-\cocoascreenfonts1{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;\red5\green50\blue108;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
-
-\f0\fs24 \cf2 hp-mapr-1\
-hp-mapr-2\
-hp-mapr-3\
-hp-mapr-4}</string>
-						<key>VerticalPad</key>
-						<integer>0</integer>
-					</dict>
-				</dict>
-				<dict>
-					<key>Bounds</key>
 					<string>{{34.20622295452533, 329.6162152131551}, {50.68357646907041, 69.631850077311213}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
@@ -1677,18 +1586,17 @@ hp-mapr-4}</string>
 				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
 				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
 				bmcBlIQBKxdwZXJzaXN0ZW50CnBhcnRpdGlvbmluZ4aE
-				AmlJAReShISEDE5TRGljdGlvbmFyeQCUhAFpBJKElpYQ
-				TlNQYXJhZ3JhcGhTdHlsZYaShISEF05TTXV0YWJsZVBh
-				cmFncmFwaFN0eWxlAISEEE5TUGFyYWdyYXBoU3R5bGUA
-				lIQEQ0NAUwAAhISEB05TQXJyYXkAlJkMkoSEhAlOU1Rl
-				eHRUYWIAlIQCQ2YAHIaShKCfADiGkoSgnwBUhpKEoJ8A
-				cIaShKCfAIGMAIaShKCfAIGoAIaShKCfAIHEAIaShKCf
-				AIHgAIaShKCfAIH8AIaShKCfAIEYAYaShKCfAIE0AYaS
-				hKCfAIFQAYaGAIaShJaWB05TQ29sb3KGkoSEhAdOU0Nv
-				bG9yAJSEAWMChARmZmZmAIOJiIg+gwD//j4BhpKElpYG
-				TlNGb250hpKEhIQGTlNGb250HpSZHIQFWzI4Y10GAAAA
-				FAAAAP/+SABlAGwAdgBlAHQAaQBjAGEAhAFmDKEAoQGh
-				AKEAhpKElpYOTlNPcmlnaW5hbEZvbnSGkrCGhg==
+				AmlJAReShISEDE5TRGljdGlvbmFyeQCUhAFpA5KElpYH
+				TlNDb2xvcoaShISEB05TQ29sb3IAlIQBYwKEBGZmZmYA
+				g4mIiD6DAP/+PgGGkoSWlhBOU1BhcmFncmFwaFN0eWxl
+				hpKEhIQQTlNQYXJhZ3JhcGhTdHlsZQCUhARDQ0BTAACE
+				hIQHTlNBcnJheQCUmQyShISECU5TVGV4dFRhYgCUhAJD
+				ZgAchpKEoqEAOIaShKKhAFSGkoSioQBwhpKEoqEAgYwA
+				hpKEoqEAgagAhpKEoqEAgcQAhpKEoqEAgeAAhpKEoqEA
+				gfwAhpKEoqEAgRgBhpKEoqEAgTQBhpKEoqEAgVABhoYA
+				hpKElpYGTlNGb250hpKEhIQGTlNGb250HpSZHIQFWzI4
+				Y10GAAAAFAAAAP/+SABlAGwAdgBlAHQAaQBjAGEAhAFm
+				DJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
 				<string>{\rtf1\ansi\ansicpg1252\cocoartf1265
@@ -1706,7 +1614,7 @@ partitioning}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{606.5, 292.8642578125}, {157, 17}}</string>
+			<string>{{606.5, 292.8642578125}, {152, 17}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1761,19 +1669,19 @@ partitioning}</string>
 				<data>
 				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
 				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
-				bmcBlIQBKxkgaHR0cDovLzEwLjMuNTYuMjE0OjY5OTYv
-				hoQCaUkBGZKEhIQMTlNEaWN0aW9uYXJ5AJSEAWkDkoSW
-				lgdOU0NvbG9yhpKEhIQHTlNDb2xvcgCUhAFjAoQEZmZm
-				ZgCDiYiIPoMA//4+AYaShJaWEE5TUGFyYWdyYXBoU3R5
-				bGWGkoSEhBdOU011dGFibGVQYXJhZ3JhcGhTdHlsZQCE
-				hBBOU1BhcmFncmFwaFN0eWxlAJSEBENDQFMAAISEhAdO
-				U0FycmF5AJSZDJKEhIQJTlNUZXh0VGFiAJSEAkNmAByG
-				koSjogA4hpKEo6IAVIaShKOiAHCGkoSjogCBjACGkoSj
-				ogCBqACGkoSjogCBxACGkoSjogCB4ACGkoSjogCB/ACG
-				koSjogCBGAGGkoSjogCBNAGGkoSjogCBUAGGhgCGkoSW
-				lgZOU0ZvbnSGkoSEhAZOU0ZvbnQelJkohAVbNDBjXQYA
-				AAAeAAAA//5IAGUAbAB2AGUAdABpAGMAYQAtAEIAbwBs
-				AGQAAACEAWYOmwCbAZsAmwCGhoY=
+				bmcBlIQBKxggaHR0cDovL21hcHIubG9jYWw6Njk5Ni+G
+				hAJpSQEYkoSEhAxOU0RpY3Rpb25hcnkAlIQBaQOShJaW
+				B05TQ29sb3KGkoSEhAdOU0NvbG9yAJSEAWMChARmZmZm
+				AIOJiIg+gwD//j4BhpKElpYQTlNQYXJhZ3JhcGhTdHls
+				ZYaShISEF05TTXV0YWJsZVBhcmFncmFwaFN0eWxlAISE
+				EE5TUGFyYWdyYXBoU3R5bGUAlIQEQ0NAUwAAhISEB05T
+				QXJyYXkAlJkMkoSEhAlOU1RleHRUYWIAlIQCQ2YAHIaS
+				hKOiADiGkoSjogBUhpKEo6IAcIaShKOiAIGMAIaShKOi
+				AIGoAIaShKOiAIHEAIaShKOiAIHgAIaShKOiAIH8AIaS
+				hKOiAIEYAYaShKOiAIE0AYaShKOiAIFQAYaGAIaShJaW
+				Bk5TRm9udIaShISEBk5TRm9udB6UmSiEBVs0MGNdBgAA
+				AB4AAAD//kgAZQBsAHYAZQB0AGkAYwBhAC0AQgBvAGwA
+				ZAAAAIQBZg6bAJsBmwCbAIaGhg==
 				</data>
 				<key>Text</key>
 				<string>{\rtf1\ansi\ansicpg1252\cocoartf1265
@@ -1781,7 +1689,7 @@ partitioning}</string>
 {\colortbl;\red255\green255\blue255;\red5\green50\blue108;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\b\fs28 \cf2  http://10.3.56.214:6996/}</string>
+\f0\b\fs28 \cf2  http://mapr.local:6996/}</string>
 				<key>VerticalPad</key>
 				<integer>0</integer>
 			</dict>
@@ -2003,18 +1911,17 @@ partitioning}</string>
 				BAtzdHJlYW10eXBlZIHoA4QBQISEhBJOU0F0dHJpYnV0
 				ZWRTdHJpbmcAhIQITlNPYmplY3QAhZKEhIQITlNTdHJp
 				bmcBlIQBKxdoZWF0bWFwIGRhdGEKZ2VuZXJhdGlvboaE
-				AmlJAReShISEDE5TRGljdGlvbmFyeQCUhAFpBJKElpYQ
-				TlNQYXJhZ3JhcGhTdHlsZYaShISEF05TTXV0YWJsZVBh
-				cmFncmFwaFN0eWxlAISEEE5TUGFyYWdyYXBoU3R5bGUA
-				lIQEQ0NAUwAAhISEB05TQXJyYXkAlJkMkoSEhAlOU1Rl
-				eHRUYWIAlIQCQ2YAHIaShKCfADiGkoSgnwBUhpKEoJ8A
-				cIaShKCfAIGMAIaShKCfAIGoAIaShKCfAIHEAIaShKCf
-				AIHgAIaShKCfAIH8AIaShKCfAIEYAYaShKCfAIE0AYaS
-				hKCfAIFQAYaGAIaShJaWB05TQ29sb3KGkoSEhAdOU0Nv
-				bG9yAJSEAWMChARmZmZmAIOJiIg+gwD//j4BhpKElpYG
-				TlNGb250hpKEhIQGTlNGb250HpSZHIQFWzI4Y10GAAAA
-				FAAAAP/+SABlAGwAdgBlAHQAaQBjAGEAhAFmDKEAoQGh
-				AKEAhpKElpYOTlNPcmlnaW5hbEZvbnSGkrCGhg==
+				AmlJAReShISEDE5TRGljdGlvbmFyeQCUhAFpA5KElpYH
+				TlNDb2xvcoaShISEB05TQ29sb3IAlIQBYwKEBGZmZmYA
+				g4mIiD6DAP/+PgGGkoSWlhBOU1BhcmFncmFwaFN0eWxl
+				hpKEhIQQTlNQYXJhZ3JhcGhTdHlsZQCUhARDQ0BTAACE
+				hIQHTlNBcnJheQCUmQyShISECU5TVGV4dFRhYgCUhAJD
+				ZgAchpKEoqEAOIaShKKhAFSGkoSioQBwhpKEoqEAgYwA
+				hpKEoqEAgagAhpKEoqEAgcQAhpKEoqEAgeAAhpKEoqEA
+				gfwAhpKEoqEAgRgBhpKEoqEAgTQBhpKEoqEAgVABhoYA
+				hpKElpYGTlNGb250hpKEhIQGTlNGb250HpSZHIQFWzI4
+				Y10GAAAAFAAAAP/+SABlAGwAdgBlAHQAaQBjAGEAhAFm
+				DJsAmwGbAJsAhoaG
 				</data>
 				<key>Text</key>
 				<string>{\rtf1\ansi\ansicpg1252\cocoartf1265
@@ -2242,8 +2149,8 @@ port 6900}</string>
 			<integer>43524</integer>
 			<key>Points</key>
 			<array>
-				<string>{84.14021345024652, 62.426676504818339}</string>
-				<string>{445.81734236294579, 61.767367622413651}</string>
+				<string>{84.140213452829343, 62.426677928389402}</string>
+				<string>{445.81734239543556, 61.767383939068758}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -2558,7 +2465,7 @@ port 6900}</string>
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2013-12-08 15:18:48 +0000</string>
+	<string>2014-01-28 10:20:39 +0000</string>
 	<key>Modifier</key>
 	<string>mhausenblas</string>
 	<key>NotesVisible</key>
