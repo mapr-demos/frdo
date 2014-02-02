@@ -63,3 +63,6 @@ The `$PP_BASE_DIR/$PP_TOPLEVEL` will then be populated with respective .dat file
     2013-12-07T16:46:34.473635|36.7220096|-4.4186772|200|a757|21cb1745-5f5f-11e3-bd32-a820664821e3
     2013-12-07T16:46:34.473811|39.7444347|3.429966|300|a883|21cb1e05-5f5f-11e3-8342-a820664821e3    
 
+## Heatmaps
+
+## Online alerts
