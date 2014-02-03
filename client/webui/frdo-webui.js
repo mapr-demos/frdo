@@ -1,9 +1,30 @@
-var frdostorage = window.localStorage;
+// constants
 var FRDO_BACKEND_URL = 'http://localhost:6996';
-var FRDO_TEST_HEATMAP = '/api/heatmap/test'
-var FRDO_HEATMAPS = '/api/heatmap'
+var FRDO_TEST_HEATMAP = '/api/heatmap/test';
+var FRDO_HEATMAPS = '/api/heatmap';
+var FRDO_ALERTS = '/api/alerts'
 var backendURL = FRDO_BACKEND_URL;
-var heatmaps = [];
+var GOOGLE_MAPS_BASE_URI = 'http://maps.google.com/maps?z=13&q=';
+
+// global vars
+var frdostorage = window.localStorage;
+var map; // the Google map
+var centerLatlng = new google.maps.LatLng(37, -122);
+var mapOptions = {
+  zoom: 6,
+  center: centerLatlng,
+  mapTypeId: google.maps.MapTypeId.ROADMAP,
+  // disableDefaultUI: false,
+  scrollwheel: true,
+  // draggable: true,
+  navigationControl: true,
+  mapTypeControl: false,
+  scaleControl: true,
+  // disableDoubleClickZoom: false
+};
+var heatmaps = []; // list of current heatmaps
+var heatmapData = {}; // raw data of the heatmap as input for rendering
+var heatmap; // handle to visual heatmap overlay
 var currentHeatmapPointer = 0;
 
 $(function(){
@@ -23,13 +44,13 @@ $(function(){
       currentHeatmapPointer = 0;
     }
     console.log('Current heatmap: ' + heatmaps[currentHeatmapPointer]);
-    $("#current-heatmap").html('current: ' + heatmaps[currentHeatmapPointer]);
+    $('#current-heatmap').html('current: ' + heatmaps[currentHeatmapPointer]);
     renderHeatmap(heatmaps[currentHeatmapPointer]);
     return false;
   });
   
-  $('#query-execute').click(function(){
-    executeQuery();
+  $('#refresh-alerts').click(function(){
+    getAlerts();
     return false;
   });
 
@@ -46,42 +67,33 @@ function initForms(){
   renderHeatmap();
 }
 
-// init the heatmap with Google maps and render some test data
+// init the heatmap with Google maps and render heatmaps data
 function renderHeatmap(hmFile) {
-  var centerLatlng = new google.maps.LatLng(40, -2);
-  var mapOptions = {
-    zoom: 6,
-    center: centerLatlng,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    // disableDefaultUI: false,
-    scrollwheel: true,
-    // draggable: true,
-    navigationControl: true,
-    mapTypeControl: false,
-    scaleControl: true,
-    // disableDoubleClickZoom: false
-  };
-  var map = new google.maps.Map($("#frdo-heatmap")[0], mapOptions);
-  var heatmap = new HeatmapOverlay(map, {
-      "radius": 15,
-      "visible": true, 
-      "opacity": 40
-  });
-  var heatmapData = {
+  var hmFileURL = backendURL + FRDO_TEST_HEATMAP;
+
+  map = new google.maps.Map($('#frdo-heatmap')[0], mapOptions);
+
+  heatmapData = {
     min: 100, // empirical 
     max: 1500, // empirical 
     data: []
   };
-  var hmFileURL = backendURL + FRDO_TEST_HEATMAP;
+  
+  heatmap = new HeatmapOverlay(map, {
+      'radius': 15,
+      'visible': true, 
+      'opacity': 40
+  });
+  
   
   if(hmFile) {
     hmFileURL = backendURL + FRDO_HEATMAPS + '/' + hmFile;
   }
  
   $.ajax({
-    type: "GET",
+    type: 'GET',
     url: hmFileURL,
-    dataType : "json",
+    dataType : 'json',
     success: function(d){
       var counts = [];
       if(d) {
@@ -96,44 +108,85 @@ function renderHeatmap(hmFile) {
         // heatmapData.min = Math.min.apply(Math, counts);
         // heatmapData.max = Math.max.apply(Math, counts);
         console.log('Scaling heatmap with min:' + heatmapData.min + ' and max: ' + heatmapData.max);
-        google.maps.event.addListenerOnce(map, "idle", function(){
+        google.maps.event.addListenerOnce(map, 'idle', function(){
             heatmap.setDataSet(heatmapData);
         });
       }
     },
     error:  function(msg){
-      $("#frdo-heatmap").html("<p>There was a problem getting the heat-map data:</p><code>" + msg.responseText + "</code>");
+      $('#frdo-heatmap').html('<p>There was a problem getting the heat-map data:</p><code>' + msg.responseText + '</code>');
     } 
   });
 }
 
-
+// returns list of currently available heatmaps
 function getHeatmapList(){
   $.ajax({
-    type: "GET",
+    type: 'GET',
     url: backendURL + FRDO_HEATMAPS,
-    dataType : "json",
+    dataType : 'json',
     success: function(d){
       if(d) {
         console.log('Got heatmaps: ' + d);
         for (var i = 0; i < d.length; i++) {
           heatmaps.push(d[i]);
         }
-        $("#current-heatmap").html('current: ' + heatmaps[currentHeatmapPointer]);
+        $('#current-heatmap').html('current: ' + heatmaps[currentHeatmapPointer]);
       }
     },
     error:  function(msg){
-      $("#current-heatmap").html("<p>can't load heatmaps: <code>" + msg.responseText + "</code>");
+      $('#current-heatmap').html('<p>can\'t load heatmaps: <code>' + msg.responseText + '</code>');
     } 
   });
 }
 
+// returns currently available alerts
+function getAlerts(){
+  $.ajax({
+    type: 'GET',
+    url: backendURL + FRDO_ALERTS,
+    dataType : 'json',
+    success: function(d){
+      alist = '<h3>Alerts</h3><div>';
+      if(d) {
+        console.log('Got alerts: ' + d);
+        
+        map = new google.maps.Map($('#frdo-heatmap')[0], mapOptions);
 
-// executes the query via JDBC
-function executeQuery(){
-  $('#query-results').text('not yet implemented');
+        heatmapData = {
+          min: 1, 
+          max: 10, 
+          data: []
+        };
+  
+        heatmap = new HeatmapOverlay(map, {
+            'radius': 10,
+            'visible': true, 
+            'opacity': 50
+        });
+        
+        for (var i = 0; i < d.length; i++) {
+          adata = d[i];
+          // http://maps.google.com/maps?z=13&q=39.211374,-82.978277
+          aloc = GOOGLE_MAPS_BASE_URI + adata.lat + ',' + adata.lon;
+          alist += '<div><a href="' + aloc + '" target="_new">' + adata.atm + '</a></div>';
+          heatmapData.data.push({'lat': adata.lat , 'lng': adata.lon, 'count': 10});
+        }
+        alist += '</div>';
+        $('#frdo-alerts').html(alist);
+        
+        console.log('Scaling heatmap with min:' + heatmapData.min + ' and max: ' + heatmapData.max);
+        google.maps.event.addListenerOnce(map, 'idle', function(){
+            heatmap.setDataSet(heatmapData);
+        });
+  
+      }
+    },
+    error:  function(msg){
+      $('#frdo-alerts').html('<p>can\'t load alerts: <code>' + msg.responseText + '</code>');
+    } 
+  });
 }
-
 
 /////////////////////////////////////////////////////
 // low-level storage API using localStorage 

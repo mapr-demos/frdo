@@ -34,6 +34,7 @@ CLIENT_DIR = 'webui'
 HEATMAPS_DATA = './heatmaps/'
 HEATMAP_PREFIX = 'heatmap_'
 HEATMAP_EXT = '.tsv'
+ALERT_DOC = 'alert.json'
 
 
 if DEBUG:
@@ -85,7 +86,7 @@ class FrDOAppServer(BaseHTTPRequestHandler):
         for f in os.listdir(HEATMAPS_DATA)
         if re.match(r'heatmap.*\.tsv', f)
       ]
-      logging.info('Heatmaps: %s ' %(heatmap_files))
+      logging.debug('Available heatmaps: %s ' %(heatmap_files))
       self.send_JSON(heatmap_files)
       
     # serve an individual heatmap
@@ -93,10 +94,17 @@ class FrDOAppServer(BaseHTTPRequestHandler):
       heatmap_filename = apicall[len('/api/heatmap/'):]
       heatmap_filename = ''.join([HEATMAP_PREFIX, heatmap_filename, HEATMAP_EXT])
       heatmap = self.parse_heatmap(HEATMAPS_DATA + heatmap_filename)
+      logging.debug('Current heatmap: %s ' %(heatmap))
       self.send_JSON(heatmap)      
+
+    # serve the current alert data
+    if apicall == '/api/alerts':
+      alerts = self.parse_alerts()
+      logging.debug('Current alerts: %s ' %(alerts))
+      self.send_JSON(alerts)
       
   
-  # parses the TSV format and generates a JSON representation that can be shipped over the wire
+  # parses the TSV format of a heatmap and generates a JSON representation that can be shipped over the wire
   def parse_heatmap(self, heatmap_filename):
     heatmap = []
     with open(heatmap_filename, 'rb') as heatmap_file:
@@ -107,6 +115,13 @@ class FrDOAppServer(BaseHTTPRequestHandler):
         for row in heatmap_reader:
           heatmap.append({'lat': float(row[1]), 'lng': float(row[2]), 'count': int(row[0])})
     return heatmap
+  
+  # parses the JSON format of the alerts in the recent epoch so that it can be shipped over the wire
+  def parse_alerts(self):
+    alerts = []
+    with open(ALERT_DOC, 'r') as alert_doc:
+        alerts = json.load(alert_doc)
+    return alerts
   
   # changes the default behavour of logging everything - only in DEBUG mode
   def log_message(self, format, *args):
@@ -162,6 +177,7 @@ if __name__ == '__main__':
     from BaseHTTPServer import HTTPServer
     server = HTTPServer(('', FRDO_PORT), FrDOAppServer)
     print('\nFrDO app server started, use {Ctrl+C} to shut-down ...')
+    print('\nGo to http://localhost:%s/ where the FrDO front-end is served, now.') %(FRDO_PORT)
     server.serve_forever()
   except getopt.GetoptError, err:
     print str(err)
