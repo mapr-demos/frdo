@@ -30,13 +30,13 @@ In the following, I describe the exact steps necessary to execute the demo.
 To demonstrate the data producing part of the demo, you first want to launch
 the streaming data generator gess:
 
-    [mapr@hp-mapr-4 gess]$ ./gess.sh start
+    [mapr@mapr-4 gess]$ ./gess.sh start
 
 Then, you launch Sisenik (for online processing and persistent partitioning):
 
-    [mapr@hp-mapr-4 cluster]$ pwd
-    /mapr/HPMapR/demo/frdo/cluster
-    [mapr@hp-mapr-4 cluster]$ python sisenik.py
+    [mapr@mapr-4 cluster]$ pwd
+    /mapr/democluster/demo/frdo/cluster
+    [mapr@mapr-4 cluster]$ python sisenik.py
 
 In order to have some data to work with, let gess+Sisenik run for a while 
 (some minutes). In the default configuration, Sisenik dumps some 1MB/sec, that
@@ -61,16 +61,16 @@ something like the following (online alerts and partitioning status):
 
 To stop producing data, first kill Sisenik (CTRL+C) and then shut down gess:
 
-    [mapr@hp-mapr-4 gess]$ ./gess.sh stop
+    [mapr@mapr-4 gess]$ ./gess.sh stop
 
 Now it's time to generate the heatmap data for the app server. To this end,
 make sure the Hive Thrift server is running:
 
-    [mapr@hp-mapr-4 demo]$ $ hive --service hiveserver
+    [mapr@mapr-4 demo]$ $ hive --service hiveserver
 
 Then you launch the heatmap generator script like so:
 
-    [mapr@hp-mapr-4 cluster]$ python heatmap.py
+    [mapr@mapr-4 cluster]$ python heatmap.py
     2013-12-08T03:51:42 Preparing fintrans and heatmap data ingestion ...
     2013-12-08T03:51:53 - loaded raw data from /tmp/sisenik/2013-12-08 (in 0:00:01.210577)
     2013-12-08T03:52:15 - created heatmap data (in 0:00:22.185298)

@@ -221,12 +221,9 @@ function setCenter(loclist) {
   
   centerlat = (maxlat + minlat)/2;
   centerlon = (maxlon + minlon)/2;
-
   console.log('LAT center:' + centerlat +  ' and LON center:' + centerlon);
   
   mapOptions.center = new google.maps.LatLng(centerlat, centerlon);
-  
-    
 }
 
 /////////////////////////////////////////////////////
