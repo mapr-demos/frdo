@@ -28,7 +28,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler
 from os import curdir, pardir, sep
 
 # configuration
-DEBUG = True
+DEBUG = False
 FRDO_PORT = 6996
 CLIENT_DIR = 'webui'
 HEATMAPS_DATA = './heatmaps/'

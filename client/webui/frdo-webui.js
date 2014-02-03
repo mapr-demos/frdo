@@ -43,7 +43,7 @@ $(function(){
     if(currentHeatmapPointer == heatmaps.length){
       currentHeatmapPointer = 0;
     }
-    console.log('Current heatmap: ' + heatmaps[currentHeatmapPointer]);
+    console.debug('Current heatmap: ' + heatmaps[currentHeatmapPointer]);
     $('#current-heatmap').html('current: ' + heatmaps[currentHeatmapPointer]);
     renderHeatmap(heatmaps[currentHeatmapPointer]);
     return false;
@@ -87,6 +87,7 @@ function renderHeatmap(hmFile) {
       if(d) {
         console.debug(d);
         
+        setCenter(d);
         map = new google.maps.Map($('#frdo-heatmap')[0], mapOptions);
 
         heatmapData = {
@@ -144,8 +145,9 @@ function renderAlerts(){
     success: function(d){
       alist = '<h3>Alerts</h3><div>';
       if(d) {
-        console.log('Got alerts: ' + d);
+        console.debug('Got alerts: ' + d);
         
+        setCenter(d);        
         map = new google.maps.Map($('#frdo-heatmap')[0], mapOptions);
 
         heatmapData = {
@@ -180,6 +182,51 @@ function renderAlerts(){
       $('#frdo-alerts').html('<p>can\'t load alerts: <code>' + msg.responseText + '</code>');
     } 
   });
+}
+
+// centers the map based on a list of locations
+function setCenter(loclist) {
+  var minlat = maxlat = minlon = maxlon = 0.0;
+  var centerlat = centerlon = 0.0;
+  
+  if(loclist[0].transaction_id){ // we're dealing with alerts data
+    minlat = maxlat = parseFloat(loclist[0].lat);
+    minlon = maxlon = parseFloat(loclist[0].lon);
+    for (var i = 1; i < loclist.length; i++) {
+      adata = loclist[i];
+      lat = parseFloat(adata.lat);
+      lon = parseFloat(adata.lon);
+      console.debug('lat:' + lat + '/lon:' + lon);
+      if (lat < minlat) minlat = lat;
+      if (lat > maxlat) maxlat = lat;
+      if (lon < minlon) minlon = lon;
+      if (lon > maxlon) maxlon = lon;
+    }  
+    mapOptions.zoom = 8;
+  }   
+  else { // we're dealing with heatmaps data
+    minlat = maxlat = loclist[0].lat;
+    minlon = maxlon = loclist[0].lng;
+    for (var i = 1; i < loclist.length; i++) {
+      adata = loclist[i];
+      console.debug('lat:' + adata.lat + '/lon:' + adata.lng);
+      if (adata.lat < minlat) minlat = adata.lat;
+      if (adata.lat > maxlat) maxlat = adata.lat;
+      if (adata.lng < minlon) minlon = adata.lng;
+      if (adata.lng > maxlon) maxlon = adata.lng;
+    }
+    mapOptions.zoom = 5;
+  }
+  console.log('LAT min:' + minlat + ', max:' + maxlat + ' and LON min:' + minlon + ', max:' + maxlon);
+  
+  centerlat = (maxlat + minlat)/2;
+  centerlon = (maxlon + minlon)/2;
+
+  console.log('LAT center:' + centerlat +  ' and LON center:' + centerlon);
+  
+  mapOptions.center = new google.maps.LatLng(centerlat, centerlon);
+  
+    
 }
 
 /////////////////////////////////////////////////////
