@@ -22,6 +22,9 @@ from collections import deque
 
 DEBUG = False
 
+# a dev flag, can disable the offline part
+DO_OFFLINE = True
+
 # defines the host where a single gess is expected to run
 GESS_IP = "127.0.0.1"
 
@@ -71,7 +74,7 @@ def process_window(fintran):
 def run():
   in_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # use UDP
   in_socket.bind((GESS_IP, GESS_UDP_PORT))
-  pp_window =  deque(maxlen=PP_WINDOW_SIZE) # sliding window for transactions 
+  pp_window = deque(maxlen=PP_WINDOW_SIZE) # sliding window for transactions 
   ticks = 0 # ticks (virtual time basis for window)
   
   while True:
@@ -92,47 +95,49 @@ def run():
     ############################################################################
     # the offline part: persistency partitioner (PP).
     # stores the incoming data stream on disk, using configurable
-    # partitions (using top-level and key-range)    
-    if ticks == 1: # first financial transaction in the queue
-      start_key = timestamp
-      logging.info('Starting new partition at key %s' %start_key)
+    # partitions (using top-level and key-range)
     
-    if ticks == PP_WINDOW_SIZE: # the queue is full
-      end_key = timestamp
-      logging.info('Closing partition from key %s to %s' %(start_key, end_key))
-      # create partition for keyrange and dump content:
-      top_level_partition = datetime.datetime.now().strftime(PP_TOPLEVEL)
-      top_level_partition_full = os.path.abspath(
-        ''.join([PP_BASE_DIR, top_level_partition, '/'])
-      )
-      # create a new directory per top-level partition:
-      if not os.path.exists(top_level_partition_full):
-          os.makedirs(top_level_partition_full)
-          logging.info('Creating new top-level partition %s' %top_level_partition_full)
+    if DO_OFFLINE:
+      if ticks == 1: # first financial transaction in the queue
+        start_key = timestamp
+        logging.info('Starting new partition at key %s' %start_key)
+    
+      if ticks == PP_WINDOW_SIZE: # the queue is full
+        end_key = timestamp
+        logging.info('Closing partition from key %s to %s' %(start_key, end_key))
+        # create partition for keyrange and dump content:
+        top_level_partition = datetime.datetime.now().strftime(PP_TOPLEVEL)
+        top_level_partition_full = os.path.abspath(
+          ''.join([PP_BASE_DIR, top_level_partition, '/'])
+        )
+        # create a new directory per top-level partition:
+        if not os.path.exists(top_level_partition_full):
+            os.makedirs(top_level_partition_full)
+            logging.info('Creating new top-level partition %s' %top_level_partition_full)
       
-      # write out the data partition (in | separated CSV format):
-      partition_file_name = ''.join([start_key, '_to_', end_key, '.dat'])
-      partition_file_name = os.path.abspath(
-              ''.join([top_level_partition_full, '/', partition_file_name])
-      )
-      partition_file  = open(partition_file_name, 'wb')
-      partition_file_writer = csv.writer(
-          partition_file,
-          delimiter='|',
-          quotechar='"',
-          quoting=csv.QUOTE_MINIMAL
-      )
-      start_time = datetime.datetime.now()
-      for ft in pp_window:
-        hive_timestamp = ft['timestamp'].replace('T', ' ')
-        row = [hive_timestamp, ft['lat'], ft['lon'], ft['amount'], ft['account_id'], ft['transaction_id']]
-        partition_file_writer.writerow(row)
-      end_time = datetime.datetime.now() 
-      diff_time = end_time - start_time 
-      logging.info('Written partition %s in %d ms' %(partition_file_name, diff_time.microseconds/1000))
-      partition_file.close()
-      pp_window =  deque(maxlen=PP_WINDOW_SIZE)
-      ticks = 0
+        # write out the data partition (in | separated CSV format):
+        partition_file_name = ''.join([start_key, '_to_', end_key, '.dat'])
+        partition_file_name = os.path.abspath(
+                ''.join([top_level_partition_full, '/', partition_file_name])
+        )
+        partition_file  = open(partition_file_name, 'wb')
+        partition_file_writer = csv.writer(
+            partition_file,
+            delimiter='|',
+            quotechar='"',
+            quoting=csv.QUOTE_MINIMAL
+        )
+        start_time = datetime.datetime.now()
+        for ft in pp_window:
+          hive_timestamp = ft['timestamp'].replace('T', ' ')
+          row = [hive_timestamp, ft['lat'], ft['lon'], ft['amount'], ft['account_id'], ft['transaction_id']]
+          partition_file_writer.writerow(row)
+        end_time = datetime.datetime.now() 
+        diff_time = end_time - start_time 
+        logging.info('Written partition %s in %d ms' %(partition_file_name, diff_time.microseconds/1000))
+        partition_file.close()
+        pp_window =  deque(maxlen=PP_WINDOW_SIZE)
+        ticks = 0
 
 
 ################################################################################
