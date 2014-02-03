@@ -48,7 +48,7 @@ BUFFER_SIZE = 1024
 PP_WINDOW_SIZE = 100000
 
 # a dev flag, can disable the offline part
-DO_OFFLINE = False
+DO_OFFLINE = True
 
 
 ################################################################################

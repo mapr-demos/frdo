@@ -11,7 +11,7 @@ var frdostorage = window.localStorage;
 var map; // the Google map
 var centerLatlng = new google.maps.LatLng(37, -40); // centre in Atlantic ocean
 var mapOptions = {
-  zoom: 2, // show both Americas and EMEA
+  zoom: 2, // show both Americas and EMEA, make it 6 to zoom in a certain region
   center: centerLatlng,
   mapTypeId: google.maps.MapTypeId.ROADMAP,
   scrollwheel: true,
@@ -50,7 +50,7 @@ $(function(){
   });
   
   $('#refresh-alerts').click(function(){
-    getAlerts();
+    renderAlerts();
     return false;
   });
 
@@ -59,37 +59,25 @@ $(function(){
 // init forms
 function initForms(){
   
+  map = new google.maps.Map($('#frdo-heatmap')[0], mapOptions);
+  
   $('#about-dialog').modal({
     backdrop: true,
     keyboard: true,
     show: false
   });
-  renderHeatmap();
 }
 
 // init the heatmap with Google maps and render heatmaps data
 function renderHeatmap(hmFile) {
-  var hmFileURL = backendURL + FRDO_TEST_HEATMAP;
+  var hmFileURL = '';
 
-  map = new google.maps.Map($('#frdo-heatmap')[0], mapOptions);
 
-  heatmapData = {
-    min: 100, // empirical 
-    max: 1500, // empirical 
-    data: []
-  };
-  
-  heatmap = new HeatmapOverlay(map, {
-      'radius': 15,
-      'visible': true, 
-      'opacity': 40
-  });
-  
-  
   if(hmFile) {
     hmFileURL = backendURL + FRDO_HEATMAPS + '/' + hmFile;
   }
- 
+  else return;
+
   $.ajax({
     type: 'GET',
     url: hmFileURL,
@@ -98,6 +86,21 @@ function renderHeatmap(hmFile) {
       var counts = [];
       if(d) {
         console.debug(d);
+        
+        map = new google.maps.Map($('#frdo-heatmap')[0], mapOptions);
+
+        heatmapData = {
+          min: 100, // empirical 
+          max: 1500, // empirical 
+          data: []
+        };
+  
+        heatmap = new HeatmapOverlay(map, {
+            'radius': 15,
+            'visible': true, 
+            'opacity': 40
+        });
+        
         heatmapData.data = d;
         console.log('Scaling heatmap with min:' + heatmapData.min + ' and max: ' + heatmapData.max);
         google.maps.event.addListenerOnce(map, 'idle', function(){
@@ -133,7 +136,7 @@ function getHeatmapList(){
 }
 
 // returns currently available alerts
-function getAlerts(){
+function renderAlerts(){
   $.ajax({
     type: 'GET',
     url: backendURL + FRDO_ALERTS,
