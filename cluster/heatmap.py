@@ -34,6 +34,7 @@ HEATMAPS_DIR = '../client/heatmaps/' # output dir
 HIVE_THRIFT_SERVER_HOST = 'localhost'
 HIVE_THRIFT_SERVER_PORT = 10000
 
+
 if DEBUG:
 	FORMAT = '%(asctime)-0s %(levelname)s %(message)s [at line %(lineno)d]'
 	logging.basicConfig(level=logging.DEBUG, format=FORMAT, 
@@ -44,9 +45,10 @@ else:
 datefmt='%Y-%m-%dT%I:%M:%S')
 
 
-def init_heatmap():
+def init_heatmap(snapshot_name):
   client = hiver.connect(HIVE_THRIFT_SERVER_HOST, HIVE_THRIFT_SERVER_PORT)
-
+  current_raw_data_path = RAW_DATA_BASE_PATH
+  
   logging.info('Preparing fintrans and heatmap data ingestion ...')
 
   client.execute('CREATE DATABASE IF NOT EXISTS frdo')
@@ -55,20 +57,28 @@ def init_heatmap():
   client.execute('CREATE TABLE fintrans (ts TIMESTAMP, lat STRING, lon STRING, amount STRING, account_id STRING, transaction_id  STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY \'|\'')
 
   # scan the top-level partition directory for data partitions ...
+  try:
+    current_raw_data_path = os.path.join(RAW_DATA_BASE_PATH, '.snapshot', snapshot_name + '/',) 
+  except:
+    pass
+
+  logging.info('- using raw data from %s' %current_raw_data_path) 
+  
   partition_dirs = [
     d
-    for d in os.listdir(RAW_DATA_BASE_PATH)
-    if os.path.isdir(os.path.join(RAW_DATA_BASE_PATH, d))
+    for d in os.listdir(current_raw_data_path)
+    if os.path.isdir(os.path.join(current_raw_data_path, d))
     # if re.match(r''\d{4}-\d{2}-/\d{2}', d)
   ]
+  
   # ... and load the data into Hive, respectively
   for partition in partition_dirs:
-    snapshot = RAW_DATA_BASE_PATH + partition
+    current_partition = current_raw_data_path + partition
     start_time = datetime.datetime.now()
-    client.execute('LOAD DATA LOCAL INPATH \'%s\' INTO TABLE fintrans' %(snapshot))
+    client.execute('LOAD DATA LOCAL INPATH \'%s\' INTO TABLE fintrans' %(current_partition))
     end_time = datetime.datetime.now()
     diff_time = end_time - start_time
-    logging.info('- loaded raw data from %s (in %s)' %(snapshot, diff_time))
+    logging.info('- loaded raw data from partition %s in %s ms' %(current_partition, diff_time))
 
   # rebuild the heatmap data table
   start_time = datetime.datetime.now()
@@ -102,8 +112,8 @@ def gen_heatmap():
   logging.info('Generated heatmap at %s' %(heatmap_file_name))
 
 
-def heatmap():
-  init_heatmap() # load the raw data and create tables in Hive
+def heatmap(snapshot_name):
+  init_heatmap(snapshot_name) # load the raw data and create tables in Hive
   gen_heatmap() # generate the heatmap data for the app server
 
 
@@ -115,16 +125,17 @@ def dump_config():
 
 
 def usage():
-  print('Usage: python heatmap.py [RAW_DATA_BASE_PATH] [HEATMAPS_DIR] [HIVE_THRIFT_SERVER_HOST] [HIVE_THRIFT_SERVER_PORT]\n')
+  print('Usage: python heatmap.py [RAW_DATA_BASE_PATH] [HEATMAPS_DIR] [HIVE_THRIFT_SERVER_HOST] [HIVE_THRIFT_SERVER_PORT] snapshot_name\n')
   print('All parameters are optional and have the following default values:')
   dump_config()
-  print('\nExample usage: python heatmap.py /data/sisenik/ ~/frdo/client/heatmaps/ 178.12.154.25 10000\n')
+  print('\nExample usage: python heatmap.py /data/sisenik/ ~/frdo/client/heatmaps/ 178.12.154.25 10000 2014-02-03_21-44-30\n')
 
 
 ################################################################################
 ## Main script
 
 if __name__ == '__main__':
+  snapshot_name = ''
   print("="*80)
   try:
     # extract and validate options and their arguments
@@ -138,12 +149,14 @@ if __name__ == '__main__':
       HEATMAPS_DIR = args[1]
       HIVE_THRIFT_SERVER_HOST = args[2]
       HIVE_THRIFT_SERVER_PORT = args[3]
+      snapshot_name = args[4]
     except:
       pass
       
     print('\nStarting heatmap generator with the following configuration:')
     dump_config()
-    heatmap()
+    print('Working on snapshot: %s') %snapshot_name
+    heatmap(snapshot_name)
   except getopt.GetoptError, err:
     print str(err)
     usage()

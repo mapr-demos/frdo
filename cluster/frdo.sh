@@ -116,7 +116,8 @@ function gen_heatmap() {
   # ... and then, after waiting 2 sec, just to be sure, generate the
   #    heatmap on the snapshotted directory
   sleep 2
-  nohup python $HEATMAP_SCRIPT $1 $2 $3 $4 # $snapshot_name
+  snapshot_name=2014-02-03_21-44-30
+  python $HEATMAP_SCRIPT $1 $2 $3 $4 $snapshot_name
 }
 
 function serve_app() {
