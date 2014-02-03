@@ -146,7 +146,7 @@ function getAlerts(){
         map = new google.maps.Map($('#frdo-heatmap')[0], mapOptions);
 
         heatmapData = {
-          min: 1, 
+          min: 10, 
           max: 10, 
           data: []
         };
@@ -154,7 +154,7 @@ function getAlerts(){
         heatmap = new HeatmapOverlay(map, {
             'radius': 10,
             'visible': true, 
-            'opacity': 50
+            'opacity': 90
         });
         
         for (var i = 0; i < d.length; i++) {
