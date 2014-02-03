@@ -9,17 +9,17 @@ var GOOGLE_MAPS_BASE_URI = 'http://maps.google.com/maps?z=13&q=';
 // global vars
 var frdostorage = window.localStorage;
 var map; // the Google map
-var centerLatlng = new google.maps.LatLng(37, -122);
+var centerLatlng = new google.maps.LatLng(37, -40); // centre in Atlantic ocean
 var mapOptions = {
-  zoom: 6,
+  zoom: 2, // show both Americas and EMEA
   center: centerLatlng,
   mapTypeId: google.maps.MapTypeId.ROADMAP,
-  // disableDefaultUI: false,
   scrollwheel: true,
-  // draggable: true,
   navigationControl: true,
   mapTypeControl: false,
-  scaleControl: true,
+  scaleControl: true
+  // draggable: true,
+  // disableDefaultUI: false,
   // disableDoubleClickZoom: false
 };
 var heatmaps = []; // list of current heatmaps
@@ -99,14 +99,6 @@ function renderHeatmap(hmFile) {
       if(d) {
         console.debug(d);
         heatmapData.data = d;
-        // calc min and max of counts to scale the shading (fixed seems to give a better idea of the dynamics, hence commented out)
-        // for (var i = 0; i < d.length; i++) {
-        //   counts.push(d[i]['count']);
-        //   console.debug('Adding count:' + d[i]['count']);
-        // }
-        // console.debug('Counts:' + counts);
-        // heatmapData.min = Math.min.apply(Math, counts);
-        // heatmapData.max = Math.max.apply(Math, counts);
         console.log('Scaling heatmap with min:' + heatmapData.min + ' and max: ' + heatmapData.max);
         google.maps.event.addListenerOnce(map, 'idle', function(){
             heatmap.setDataSet(heatmapData);
@@ -179,7 +171,6 @@ function getAlerts(){
         google.maps.event.addListenerOnce(map, 'idle', function(){
             heatmap.setDataSet(heatmapData);
         });
-  
       }
     },
     error:  function(msg){
