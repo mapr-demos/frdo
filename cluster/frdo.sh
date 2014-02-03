@@ -30,6 +30,17 @@ SISENIK_PID=sisenik.pid
 ################################################################################
 # CONFIG 
 
+############## SYSTEM ##############
+
+# Hive
+HIVE_THRIFT_SERVER_HOST=localhost
+HIVE_THRIFT_SERVER_PORT=10000
+
+# MapR
+FRDO_DATA_VOLUME=user_data
+
+############## APPLICATION ##############
+
 # gess config
 GESS_DIR=../../gess/
 GESS_SCRIPT=./gess.sh
@@ -41,21 +52,17 @@ SISENIK_PP=/tmp/sisenik/ # top-level input (raw) data dir
 HEATMAPS_DIR=../client/heatmaps/ # directory where the heatmaps go
 ALERT_DOC=../client/alert.json # file where the alerts go
 
-# heatmap generator
+# heatmap generator config
 HEATMAP_SCRIPT=heatmap.py
 
-# Hive
-HIVE_THRIFT_SERVER_HOST=localhost
-HIVE_THRIFT_SERVER_PORT=10000
-
-# app server
+# application and web server config
 APP_SERVER_DIR=../client/
 APP_SERVER_SCRIPT=frdo-client-appserver.py
 
 ################################################################################
 
 function usage() {
-	printf "Usage: %s up | down | gen | run\n" $0
+	printf "Usage: %s up | down | snap | gen | run\n" $0
 }
 
 function launch_frdo() {
@@ -96,9 +103,20 @@ function stop_sisenik() {
   fi
 }
 
+function create_snapshot() {
+  snapshot_name=$(date +"%Y-%m-%d_%H-%M-%S")
+  maprcli volume snapshot create -snapshotname $snapshot_name -volume $1
+}
+
 function gen_heatmap() {
-  # snapshot
-  nohup python $HEATMAP_SCRIPT $1 $2 $3 $4
+  # create a snapshot ...
+  snapshot_name=$(date +"%Y-%m-%d_%H-%M-%S")
+  maprcli volume snapshot create -snapshotname $snapshot_name -volume $1
+  
+  # ... and then, after waiting 2 sec, just to be sure, generate the
+  #    heatmap on the snapshotted directory
+  sleep 2
+  nohup python $HEATMAP_SCRIPT $1 $2 $3 $4 # $snapshot_name
 }
 
 function serve_app() {
@@ -112,6 +130,7 @@ function serve_app() {
 case $1 in
  up )      launch_frdo $GESS_IP $SISENIK_PP $ALERT_DOC ;;
  down )    shutdown_frdo ;;
+ snap )    create_snapshot $FRDO_DATA_VOLUME ;;
  gen )     gen_heatmap $SISENIK_PP $HEATMAPS_DIR $HIVE_THRIFT_SERVER_HOST $HIVE_THRIFT_SERVER_PORT ;;
  run )     serve_app ;;
  * )       usage ; exit 1 ; ;;
