@@ -22,8 +22,8 @@ from collections import deque
 
 DEBUG = False
 
-# a dev flag, can disable the offline part
-DO_OFFLINE = True
+################################################################################
+# INPUT
 
 # defines the host where a single gess is expected to run
 GESS_IP = "127.0.0.1"
@@ -34,12 +34,29 @@ GESS_UDP_PORT = 6900
 # defines the buffer size (in Bytes) of the datagram receiver
 BUFFER_SIZE = 1024 
 
+################################################################################
+# PROCESSING
+
 # defines the window size for processing and determines
 # also the file size of a single partition (one .dat file)
 # 10,000    ... 1MB 
 # 100,000   ... 10MB
 # 1,000,000 ... 100MB
 PP_WINDOW_SIZE = 100000
+
+# a dev flag, can disable the offline part
+DO_OFFLINE = False
+
+################################################################################
+# OUTPUT
+
+# defines the output file wherein detected fraud transactions are persisted to
+# in the following JSON format:
+ALERT_DOC =  '../client/alert.json'
+
+# defines the observation epoch in seconds. After this time the ALERT_DOC
+# is reset and a new observation epoch starts.
+ALERT_SPAN = 10
 
 
 ################################################################################
@@ -67,9 +84,10 @@ else:
 # implements a very naive fraud detction, just look for the flag 'xxx'
 def process_window(fintran):
     transaction_id = fintran['transaction_id']
+    atm = fintran['atm']
     if transaction_id.startswith('xxx'):
       account_id = fintran['account_id']
-      logging.info('DETECTED fraudulent transaction on account %s' %(account_id))
+      logging.info('DETECTED fraudulent transaction at ATM %s using account %s' %(atm, account_id))
 
 def run():
   in_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # use UDP
@@ -93,10 +111,8 @@ def run():
     process_window(fintran)
     
     ############################################################################
-    # the offline part: persistency partitioner (PP).
-    # stores the incoming data stream on disk, using configurable
-    # partitions (using top-level and key-range)
-    
+    # the offline part: the persistency partitioner (PP) stores incoming
+    # data to disk, using configurable partitions (top-level and key-range)
     if DO_OFFLINE:
       if ticks == 1: # first financial transaction in the queue
         start_key = timestamp
