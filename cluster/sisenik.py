@@ -18,6 +18,7 @@ import uuid
 import json
 import re
 import csv
+import getopt
 from collections import deque
 
 DEBUG = False
@@ -162,8 +163,42 @@ def run():
         ticks = 0
 
 
+def dump_config():
+  print(' GESS_IP:        %s') %GESS_IP
+  print(' PP_BASE_DIR:    %s') %PP_BASE_DIR
+  print(' ALERT_DOC_NAME: %s') % ALERT_DOC_NAME
+
+
+def usage():
+  print('Usage: python sisenik.py [GESS_IP] [PP_BASE_DIR] [ALERT_DOC_NAME]\n')
+  print('All parameters are optional and have the following default values:')
+  dump_config()
+  print('\nExample usage: python sisenik.py 178.12.154.23 /data/sisenik/ ~/frdo/client/alert.json\n')
+
+
 ################################################################################
 ## Main script
 
 if __name__ == '__main__':
-  run()
+  print("="*80)
+  try:
+    # extract and validate options and their arguments
+    opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+    for opt, arg in opts:
+      if opt in ('-h', '--help'):
+        usage()
+        sys.exit()
+    try:
+      GESS_IP = args[0]
+      PP_BASE_DIR = args[1]
+      ALERT_DOC_NAME = args[2]
+    except:
+      pass
+      
+    print('\nStarting sisenik with the following configuration:')
+    dump_config()
+    run()
+  except getopt.GetoptError, err:
+    print str(err)
+    usage()
+    sys.exit(2)

@@ -18,6 +18,7 @@ import json
 import re
 import csv
 import hiver
+import getopt
 from time import sleep
 
 ################################################################################
@@ -27,10 +28,10 @@ DEBUG = False
 
 # input and output directory settings
 RAW_DATA_BASE_PATH = '/tmp/sisenik/' # top-level input (raw) data dir 
-APP_SERVER_HEATMAPS_DATA_PATH = '../client/heatmaps/' # output dir
+HEATMAPS_DIR = '../client/heatmaps/' # output dir
 
 # for the communication with the Hive Thrift server
-HIVE_THRIFT_SERVER_HOST_NAME = 'localhost'
+HIVE_THRIFT_SERVER_HOST = 'localhost'
 HIVE_THRIFT_SERVER_PORT = 10000
 
 if DEBUG:
@@ -44,7 +45,7 @@ datefmt='%Y-%m-%dT%I:%M:%S')
 
 
 def init_heatmap():
-  client = hiver.connect(HIVE_THRIFT_SERVER_HOST_NAME, HIVE_THRIFT_SERVER_PORT)
+  client = hiver.connect(HIVE_THRIFT_SERVER_HOST, HIVE_THRIFT_SERVER_PORT)
 
   logging.info('Preparing fintrans and heatmap data ingestion ...')
 
@@ -79,14 +80,14 @@ def init_heatmap():
 
 
 def gen_heatmap():
-  client = hiver.connect(HIVE_THRIFT_SERVER_HOST_NAME, HIVE_THRIFT_SERVER_PORT)
+  client = hiver.connect(HIVE_THRIFT_SERVER_HOST, HIVE_THRIFT_SERVER_PORT)
   client.execute('USE frdo')
   client.execute('SELECT * FROM heatmap')
   rows = client.fetchAll()
   
   heatmap_file_name = ''.join(['heatmap_', datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'), '.tsv'])
   heatmap_file_name = os.path.abspath(
-          ''.join([APP_SERVER_HEATMAPS_DATA_PATH, heatmap_file_name])
+          ''.join([HEATMAPS_DIR, heatmap_file_name])
   )
   heatmap_file  = open(heatmap_file_name, 'wb')
   heatmap_file_writer = csv.writer(
@@ -106,9 +107,44 @@ def heatmap():
   gen_heatmap() # generate the heatmap data for the app server
 
 
+def dump_config():
+  print(' RAW_DATA_BASE_PATH:      %s') %RAW_DATA_BASE_PATH
+  print(' HEATMAPS_DIR:            %s') %HEATMAPS_DIR
+  print(' HIVE_THRIFT_SERVER_HOST: %s') %HIVE_THRIFT_SERVER_HOST
+  print(' HIVE_THRIFT_SERVER_PORT: %s') %HIVE_THRIFT_SERVER_PORT
+
+
+def usage():
+  print('Usage: python heatmap.py [RAW_DATA_BASE_PATH] [HEATMAPS_DIR] [HIVE_THRIFT_SERVER_HOST] [HIVE_THRIFT_SERVER_PORT]\n')
+  print('All parameters are optional and have the following default values:')
+  dump_config()
+  print('\nExample usage: python heatmap.py /data/sisenik/ ~/frdo/client/heatmaps/ 178.12.154.25 10000\n')
+
 
 ################################################################################
 ## Main script
 
 if __name__ == '__main__':
-  heatmap()
+  print("="*80)
+  try:
+    # extract and validate options and their arguments
+    opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+    for opt, arg in opts:
+      if opt in ('-h', '--help'):
+        usage()
+        sys.exit()
+    try:
+      RAW_DATA_BASE_PATH = args[0]
+      HEATMAPS_DIR = args[1]
+      HIVE_THRIFT_SERVER_HOST = args[2]
+      HIVE_THRIFT_SERVER_PORT = args[3]
+    except:
+      pass
+      
+    print('\nStarting heatmap generator with the following configuration:')
+    dump_config()
+    heatmap()
+  except getopt.GetoptError, err:
+    print str(err)
+    usage()
+    sys.exit(2)
