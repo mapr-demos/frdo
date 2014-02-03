@@ -23,7 +23,7 @@ from collections import deque
 DEBUG = False
 
 ################################################################################
-# INPUT
+# Config INPUT
 
 # defines the host where a single gess is expected to run
 GESS_IP = "127.0.0.1"
@@ -34,44 +34,41 @@ GESS_UDP_PORT = 6900
 # defines the buffer size (in Bytes) of the datagram receiver
 BUFFER_SIZE = 1024 
 
-################################################################################
-# PROCESSING
 
-# defines the window size for processing and determines
-# also the file size of a single partition (one .dat file)
-# 10,000    ... 1MB 
-# 100,000   ... 10MB
-# 1,000,000 ... 100MB
+################################################################################
+# Config PROCESSING
+
+# defines the window size for processing and with it determines:
+#     * the file size of a single partition (one .dat file)
+#     * as well as the number of entries in the alert out doc
+#
+#     10,000  ... ~1 MB partition size, ~1 entry in alert doc
+#    100,000  ... ~10 MB partition size, ~10 entries in alert doc
+#  1,000,000  ... ~100 MB partition size, ~100 entries in alert doc
 PP_WINDOW_SIZE = 100000
 
 # a dev flag, can disable the offline part
 DO_OFFLINE = False
 
-################################################################################
-# OUTPUT
-
-# defines the output file wherein detected fraud transactions are persisted to
-# in the following JSON format:
-ALERT_DOC =  '../client/alert.json'
-
-# defines the observation epoch in seconds. After this time the ALERT_DOC
-# is reset and a new observation epoch starts.
-ALERT_SPAN = 10
-
 
 ################################################################################
-#
-# Below the configuration of the persistency partitioner (PP) that takes 
-# care of storing the incoming data stream on disk, using configurable
-# partitions (top-level and key-range). 
+# Config OUTPUT
 
-# the base directory for the persistency partitioner
+# defines the JSON-formatted alert output document wherein detected fraud 
+# transactions are persisted to whenever PP_WINDOW_SIZE is reached.
+ALERT_DOC_NAME =  '../client/alert.json'
+
+# defines the persistency partitioner (PP) takin care of storing incoming data
+# on disk, using configurable partitions (top-level/ key-range). 
+
+# defines the base directory for the PP.
 # NOTE: if you set that to empty, the data will be persisted 
 #       in a sub-directory of the current working directory
 PP_BASE_DIR = '/tmp/sisenik/'
 
-# the top-level partitioning for the persistency partitioner (per day)
+# defines the top-level partitioning for the PP (per day)
 PP_TOPLEVEL = '%Y-%m-%d' # yields top-level partition ala 2013-11-04/
+
 
 if DEBUG:
   FORMAT = '%(asctime)-0s %(levelname)s %(message)s [at line %(lineno)d]'
@@ -82,18 +79,27 @@ else:
 
 
 # implements a very naive fraud detction, just look for the flag 'xxx'
-def process_window(fintran):
-    transaction_id = fintran['transaction_id']
-    atm = fintran['atm']
-    if transaction_id.startswith('xxx'):
-      account_id = fintran['account_id']
-      logging.info('DETECTED fraudulent transaction at ATM %s using account %s' %(atm, account_id))
+def process_window(ticks, fintran, alert_queue):
+    if ticks == PP_WINDOW_SIZE: # queue full, write out file and reset
+      with open(ALERT_DOC_NAME, 'w') as alert_doc:
+        json.dump(alert_queue, alert_doc)
+      alert_doc.close()
+      alert_queue = []
+      logging.info('PERSISTED fraudulent transactions in %s' %(ALERT_DOC_NAME))
+    else:
+      transaction_id = fintran['transaction_id']
+      atm = fintran['atm']
+      if transaction_id.startswith('xxx'):
+        account_id = fintran['account_id']
+        logging.info('DETECTED fraudulent transaction at ATM %s using account %s' %(atm, account_id))
+        alert_queue.append(fintran)
 
 def run():
   in_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # use UDP
   in_socket.bind((GESS_IP, GESS_UDP_PORT))
   pp_window = deque(maxlen=PP_WINDOW_SIZE) # sliding window for transactions 
   ticks = 0 # ticks (virtual time basis for window)
+  alert_queue = []
   
   while True:
     ticks += 1 # advance the virtual time
@@ -108,7 +114,7 @@ def run():
     ############################################################################
     # the online stream processing part
     # 
-    process_window(fintran)
+    process_window(ticks, fintran, alert_queue)
     
     ############################################################################
     # the offline part: the persistency partitioner (PP) stores incoming
