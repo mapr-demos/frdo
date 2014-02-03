@@ -103,21 +103,22 @@ function stop_sisenik() {
   fi
 }
 
-function create_snapshot() {
-  snapshot_name=$(date +"%Y-%m-%d_%H-%M-%S")
-  maprcli volume snapshot create -snapshotname $snapshot_name -volume $1
-}
-
 function gen_heatmap() {
-  # create a snapshot ...
-  snapshot_name=$(date +"%Y-%m-%d_%H-%M-%S")
-  maprcli volume snapshot create -snapshotname $snapshot_name -volume $1
+
+  echo "Press [CTRL+C] to stop heatmap generation."
+
+  while true
+  do
+    # create a snapshot ...
+    snapshot_name=$(date +"%Y-%m-%d_%H-%M-%S")
+    maprcli volume snapshot create -snapshotname $snapshot_name -volume $1
   
-  # ... and then, after waiting 2 sec, just to be sure, generate the
-  #    heatmap on the snapshotted directory
-  sleep 2
-  snapshot_name=2014-02-03_21-44-30
-  python $HEATMAP_SCRIPT $1 $2 $3 $4 $snapshot_name
+    # ... and then, after waiting 2 sec, just to be sure, generate the
+    #    heatmap on the snapshotted directory
+    sleep 2
+    snapshot_name=2014-02-03_21-44-30
+    python $HEATMAP_SCRIPT $1 $2 $3 $4 $snapshot_name
+  done
 }
 
 function serve_app() {
@@ -126,12 +127,13 @@ function serve_app() {
   python $APP_SERVER_SCRIPT
 }
 
-
+###############################################################################
 # main script
+#
+# sequence is: 'up' then 'gen' in one terminal and 'run' in another
 case $1 in
  up )      launch_frdo $GESS_IP $SISENIK_PP $ALERT_DOC ;;
  down )    shutdown_frdo ;;
- snap )    create_snapshot $FRDO_DATA_VOLUME ;;
  gen )     gen_heatmap $SISENIK_PP $HEATMAPS_DIR $HIVE_THRIFT_SERVER_HOST $HIVE_THRIFT_SERVER_PORT ;;
  run )     serve_app ;;
  * )       usage ; exit 1 ; ;;
