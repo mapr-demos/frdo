@@ -37,7 +37,7 @@ HIVE_THRIFT_SERVER_HOST=localhost
 HIVE_THRIFT_SERVER_PORT=10000
 
 # MapR
-FRDO_DATA_VOLUME=user_data
+FRDO_DATA_VOLUME=frdo
 
 ############## APPLICATION ##############
 
@@ -111,7 +111,7 @@ function gen_heatmap() {
   do
     # create a snapshot ...
     snapshot_name=$(date +"%Y-%m-%d_%H-%M-%S")
-    maprcli volume snapshot create -snapshotname $snapshot_name -volume $1
+    maprcli volume snapshot create -snapshotname $snapshot_name -volume $5
   
     # ... and then, after waiting 2 sec, just to be sure, generate the
     #    heatmap on the snapshotted directory
@@ -134,7 +134,7 @@ function serve_app() {
 case $1 in
  up )      launch_frdo $GESS_IP $SISENIK_PP $ALERT_DOC ;;
  down )    shutdown_frdo ;;
- gen )     gen_heatmap $SISENIK_PP $HEATMAPS_DIR $HIVE_THRIFT_SERVER_HOST $HIVE_THRIFT_SERVER_PORT ;;
+ gen )     gen_heatmap $SISENIK_PP $HEATMAPS_DIR $HIVE_THRIFT_SERVER_HOST $HIVE_THRIFT_SERVER_PORT $FRDO_DATA_VOLUME ;;
  run )     serve_app ;;
  * )       usage ; exit 1 ; ;;
 esac
