@@ -33,31 +33,31 @@ SISENIK_PID=sisenik.pid
 ############## SYSTEM ##############
 
 # Hive
-HIVE_THRIFT_SERVER_HOST=localhost
-HIVE_THRIFT_SERVER_PORT=10000
+HIVE_THRIFT_SERVER_HOST=localhost # set to hostname/IP the Hive metastore is on
+HIVE_THRIFT_SERVER_PORT=10000 # change if you serve metastore from non-default
 
 # MapR
-FRDO_DATA_VOLUME=frdo
+FRDO_DATA_VOLUME=frdo # create a volume and set volume name here (used for PP)
 
 ############## APPLICATION ##############
 
 # gess config
-GESS_DIR=../../gess/
-GESS_SCRIPT=./gess.sh
+GESS_DIR=../../gess/ # set to where you have installed gess
+GESS_SCRIPT=./gess.sh # typically no need to touch this
 GESS_IP=127.0.0.1 # on which node of the cluster gess runs
 
 # sisenik config
-SISENIK_SCRIPT=sisenik.py
-SISENIK_PP=/tmp/sisenik/ # top-level input (raw) data dir 
-HEATMAPS_DIR=../client/heatmaps/ # directory where the heatmaps go
-ALERT_DOC=../client/alert.json # file where the alerts go
+SISENIK_SCRIPT=sisenik.py # typically no need to touch this
+SISENIK_PP=/tmp/sisenik/ # top-level input raw data directory (on frdo volume)
+HEATMAPS_DIR=../client/heatmaps/ # directory where heatmaps go (on frdo volume)
+ALERT_DOC=../client/alert.json # file where the alerts go (on frdo volume)
 
 # heatmap generator config
-HEATMAP_SCRIPT=heatmap.py
+HEATMAP_SCRIPT=heatmap.py # typically no need to touch this
 
 # application and web server config
-APP_SERVER_DIR=../client/
-APP_SERVER_SCRIPT=frdo-client-appserver.py
+APP_SERVER_DIR=../client/ # set to where you have installed the front-end
+APP_SERVER_SCRIPT=frdo-client-appserver.py # typically no need to touch this
 
 ################################################################################
 

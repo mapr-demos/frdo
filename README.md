@@ -19,86 +19,64 @@ The underlying ATM location data stems from the [OpenStreetMap](http://openstree
 
 ### Deployment
 
-Read the [deployment notes](doc/deploy-notes.md).
+Read the [deployment notes](doc/deploy-notes.md) to learn how to set up the
+environment and the app. 
 
 ## Usage
 
-In the following, I describe the exact steps necessary to execute the demo.
+In the following I assume you've set up the M5 cluster and installed the FrDO
+app locally on node `mapr-demo-2`. I created a volume called `frdo` mounted
+at `/mapr/frdo` where I installed the app and which serves as the basis for the
+scratch data.
 
-### STEP 1: producing data
+The one and only script you need to run the demo is called `frdo.sh` and it has
+the following options:
 
-To demonstrate the data producing part of the demo, you first want to launch
-the streaming data generator gess:
+* `up` ... launches both the streaming source gess as well the stream processor Sisenik
+* `down` ... shuts down gess/Sisenik, no more data produced
+* `gen` ... continuously generates heatmaps based on snapshots of the FrDO volume
+* `run` ... launches the appserver and makes front-end available via http://mapr-demo-2:6996/
 
-    [mapr@mapr-4 gess]$ ./gess.sh start
+Note that you'll need adapt the config settings in `frdo.sh` before you can use
+it (FrDO volume, Hive config, locations of scripts).
 
-Then, you launch Sisenik (for online processing and persistent partitioning):
+### Data generation
 
-    [mapr@mapr-4 cluster]$ pwd
-    /mapr/democluster/demo/frdo/cluster
-    [mapr@mapr-4 cluster]$ python sisenik.py
+To demonstrate the data generation part of the demo, you first want to launch
+the streaming data generator gess and the stream processor Sisenik:
 
-In order to have some data to work with, let gess+Sisenik run for a while 
-(some minutes). In the default configuration, Sisenik dumps some 1MB/sec, that
-is, say, for a 3 minutes run you'll end up with some 180MB (=`3 x 60 x 1MB/s`) 
+    [mapr@mapr-demo-2 frdo]$ ./frdo.sh up
+
+Note that in order to have some data to work with, let gess/Sisenik run for a 
+few minutes. In the default configuration, Sisenik dumps some 1MB/sec, that is, 
+say, for a 3 minutes run you'll end up with some 180MB (=`3 x 60 x 1MB/s`) 
 worth of data.
 
-While Sisenik is running, show the console where it is running. You should see
-something like the following (online alerts and partitioning status):
-
-    Starting new partition at key 2013-12-08T15-44-09-609910
-    DETECTED fraudulent transaction on account a22
-    DETECTED fraudulent transaction on account a764
-    DETECTED fraudulent transaction on account a863
-    Closing partition from key 2013-12-08T15-44-09-609910 to 2013-12-08T15-44-19-167569
-    Written partition /tmp/sisenik/2013-12-08/2013-12-08T15-44-09-609910_to_2013-12-08T15-44-19-167569.dat in 885 ms
-    Starting new partition at key 2013-12-08T15-44-19-167666
-    DETECTED fraudulent transaction on account a799
-    DETECTED fraudulent transaction on account a461
-    DETECTED fraudulent transaction on account a185
-    Closing partition from key 2013-12-08T15-44-19-167666 to 2013-12-08T15-44-29-519752
-    Written partition /tmp/sisenik/2013-12-08/2013-12-08T15-44-19-167666_to_2013-12-08T15-44-29-519752.dat in 804 ms
-
-To stop producing data, first kill Sisenik (CTRL+C) and then shut down gess:
-
-    [mapr@mapr-4 gess]$ ./gess.sh stop
-
-Now it's time to generate the heatmap data for the app server. To this end,
+Next it's time to generate the heatmap data for the app server. To this end,
 make sure the Hive Thrift server is running:
 
-    [mapr@mapr-4 demo]$ $ hive --service hiveserver
+    [mapr@mapr-demo-2 frdo]$ hive --service hiveserver
 
-Then you launch the heatmap generator script like so:
+and then tell FrDO to kick off the snapshot-based Hive aggregation task that
+will continuously run until you exit with `CTRL+C`: 
 
-    [mapr@mapr-4 cluster]$ python heatmap.py
-    2013-12-08T03:51:42 Preparing fintrans and heatmap data ingestion ...
-    2013-12-08T03:51:53 - loaded raw data from /tmp/sisenik/2013-12-08 (in 0:00:01.210577)
-    2013-12-08T03:52:15 - created heatmap data (in 0:00:22.185298)
-    2013-12-08T03:52:16 Generated heatmap at ../frdo/client/heatmaps/heatmap_2013-12-08_15-52-16.tsv
+    [mapr@mapr-demo-2 frdo]$ ./frdo.sh gen
+    
+Finally, to stop generating data, shut down it down as so:
 
-The new heatmap data is now available for the app server to serve to the Web UI.
+    [mapr@mapr-demo-2 frdo]$ ./frdo.sh down
 
-### STEP 2: consuming data
+### Data consumption
 
 To demo the consumption part you first have to launch the FrDo app server:
 
-    [client] $ python frdo-client-appserver.py
-    ================================================================================
+    [mapr@mapr-demo-2 frdo]$ ./frdo.sh run
 
-    FrDO app server started, use {Ctrl+C} to shut-down ...
-    2013-12-08T04:10:56 API call: /api/heatmap/test
-    2013-12-08T04:10:56 API call: /api/heatmap
-    2013-12-08T04:10:56 Heatmaps: ['2013-12-07_22-10-03', '2013-12-08_06-02-29', '2013-12-08_09-03-41', '2013-12-08_15-52-16']
-
-
-Leave the app server running as long as you're showing the client part: for this,
-simply launch a Web browser (tested under Chrome); you should then see the FrDO WebUI:
+Then, to use the front-end launch a Web browser (tested under Chrome) and
+you should go to [mapr-demo-2:6996/](http://mapr-demo-2:6996/) where you
+should see the following:
 
 ![FrDO WebUI screen shot](doc/frdo-webui-screenshot.png?raw=true)
-
-Hit the `refresh` button to step through the different heatmap files.
-
-That's it. 
 
 ## Architecture
 
@@ -114,7 +92,7 @@ See more details in the [cluster documentation](cluster/README.md).
 
 Client part:
 
-* Online alerts are available via the command line (console of one of the cluster machines).
+* Online alerts are available via the command line (console of one of the cluster machines) as well as via the front-end.
 * The [app server](frdo/client/frdo-client-appserver.py) serves static resources and a JSON representation of the heatmap data.
 
 

@@ -23,7 +23,7 @@ And I've installed the services as follows:
 
 
 
-## Launch and shutdown
+## Launch and shutdown the cluster
 
 On each node first launch ZK:
 
@@ -45,14 +45,13 @@ To shut down the cluster (again on each node, starting with either 2 or 3):
   [root@mapr-demo-1 ~]# service mapr-zookeeper stop
 
 
-
-## Plan
+## Install dependencies and app
 
 1. Install Hive
 1. Mount `/mapr` locally
 1. Install demo software on cluster
 
-## 1. Install Hive
+### 1. Install Hive
 
 On one node:
 
@@ -64,7 +63,7 @@ And on this node also edit `/opt/mapr/conf/env.sh`:
     export HIVE_HOME=/opt/mapr/hive/hive-0.12
 
 
-## 2. Mount MapR-FS locally
+### 2. Mount MapR-FS locally
 
 To determine which nodes are running the NFS gateway:
 
@@ -75,7 +74,6 @@ To determine which nodes are running the NFS gateway:
 
 
 NOTE: currently only `sudo mount -o vers=3,nolock,hard mapr-demo-1:/mapr/MMDemo /mapr` works, check why.
-
 
 My config:
 
@@ -94,7 +92,7 @@ And get rid of it again:
 
     [root@mapr-demo-1 /]# umount /mapr
 
-## 3. Install app on cluster
+### 3. Install app on cluster
 
 Get the content from both [gess](https://github.com/mhausenblas/gess) and
 [FrDO](https://github.com/mhausenblas/frdo). You can either copy locally using
