@@ -19,10 +19,10 @@
 #
 # NOTE that in order for this script to work, two preconditions must be met:
 #
-#   1. Hadoop (HDFS) must be runnin: start-all.sh
+#   1. Hadoop (HDFS) must be running: start-all.sh
 #   2. Hive server is running and accessible: hive --service hiveserver
 #
-# Usage: ./frdo.sh
+# Usage: ./frdo.sh up | down | gen | run
 #
 
 SISENIK_PID=sisenik.pid
