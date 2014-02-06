@@ -27,7 +27,8 @@ from time import sleep
 DEBUG = False
 
 # input and output directory settings
-RAW_DATA_BASE_PATH = '/tmp/sisenik/' # top-level input (raw) data dir 
+VOLUME_BASE_PATH='/mapr/frdo/' # top level mount loc of volume for snapshots
+RAW_DATA_BASE_PATH = '/tmp/sisenik/' # dir for PP, relative to VOLUME_BASE_PATH 
 HEATMAPS_DIR = '../client/heatmaps/' # output dir
 
 # for the communication with the Hive Thrift server
@@ -58,7 +59,7 @@ def init_heatmap(snapshot_name):
 
   # scan the top-level partition directory for data partitions ...
   try:
-    current_raw_data_path = os.path.join(RAW_DATA_BASE_PATH, '.snapshot', snapshot_name + '/',) 
+    current_raw_data_path = os.path.join(VOLUME_BASE_PATH, '.snapshot', snapshot_name + '/', RAW_DATA_BASE_PATH)
   except:
     pass
 
@@ -118,17 +119,18 @@ def heatmap(snapshot_name):
 
 
 def dump_config():
-  print(' RAW_DATA_BASE_PATH:      %s') %RAW_DATA_BASE_PATH
-  print(' HEATMAPS_DIR:            %s') %HEATMAPS_DIR
-  print(' HIVE_THRIFT_SERVER_HOST: %s') %HIVE_THRIFT_SERVER_HOST
-  print(' HIVE_THRIFT_SERVER_PORT: %s') %HIVE_THRIFT_SERVER_PORT
+  print(' VOLUME_BASE_PATH:         %s') %VOLUME_BASE_PATH
+  print(' RAW_DATA_BASE_PATH:       %s') %RAW_DATA_BASE_PATH
+  print(' HEATMAPS_DIR:             %s') %HEATMAPS_DIR
+  print(' HIVE_THRIFT_SERVER_HOST:  %s') %HIVE_THRIFT_SERVER_HOST
+  print(' HIVE_THRIFT_SERVER_PORT:  %s') %HIVE_THRIFT_SERVER_PORT
 
 
 def usage():
-  print('Usage: python heatmap.py [RAW_DATA_BASE_PATH] [HEATMAPS_DIR] [HIVE_THRIFT_SERVER_HOST] [HIVE_THRIFT_SERVER_PORT] snapshot_name\n')
-  print('All parameters are optional and have the following default values:')
+  print('Usage: python heatmap.py [VOLUME_BASE_PATH] [RAW_DATA_BASE_PATH] [HEATMAPS_DIR] [HIVE_THRIFT_SERVER_HOST] [HIVE_THRIFT_SERVER_PORT] SNAPSHOT_NAME\n')
+  print('All parameters besides the SNAPSHOT_NAME are optional and have the following default values:')
   dump_config()
-  print('\nExample usage: python heatmap.py /data/sisenik/ ~/frdo/client/heatmaps/ 178.12.154.25 10000 2014-02-03_21-44-30\n')
+  print('\nExample usage: python heatmap.py /mapr/frdo/ /tmp/sisenik/ ~/frdo/client/heatmaps/ 178.12.154.25 10000 2014-02-03_21-44-30\n')
 
 
 ################################################################################
@@ -140,16 +142,23 @@ if __name__ == '__main__':
   try:
     # extract and validate options and their arguments
     opts, args = getopt.getopt(sys.argv[1:], 'h', ['help'])
+    
+    if len(sys.argv) < 2:
+      print('\nYou must provide at least one parameter: the name of the snapshot.\n')
+      usage()
+      sys.exit(2)
+      
     for opt, arg in opts:
       if opt in ('-h', '--help'):
         usage()
         sys.exit()
     try:
-      RAW_DATA_BASE_PATH = args[0]
-      HEATMAPS_DIR = args[1]
-      HIVE_THRIFT_SERVER_HOST = args[2]
-      HIVE_THRIFT_SERVER_PORT = args[3]
-      snapshot_name = args[4]
+      VOLUME_BASE_PATH = args[0]
+      RAW_DATA_BASE_PATH = args[1]
+      HEATMAPS_DIR = args[2]
+      HIVE_THRIFT_SERVER_HOST = args[3]
+      HIVE_THRIFT_SERVER_PORT = args[4]
+      snapshot_name = args[5]
     except:
       pass
       
