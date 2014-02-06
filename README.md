@@ -55,22 +55,28 @@ worth of data.
 Next it's time to generate the heatmap data for the app server. To this end,
 make sure the Hive Thrift server is running:
 
-    [mapr@mapr-demo-2 frdo]$ hive --service hiveserver
+    [mapr@mapr-demo-2 cluster]$ pwd
+    /mapr/frdo/cluster
+    [mapr@mapr-demo-2 cluster]$ hive --service hiveserver &
+    [mapr@mapr-demo-2 cluster]$ disown
+    [mapr@mapr-demo-2 cluster]$ lsof -i:10000
+    COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+    java    28361 mapr  142u  IPv4 101497      0t0  TCP *:ndmp (LISTEN)
 
 and then tell FrDO to kick off the snapshot-based Hive aggregation task that
 will continuously run until you exit with `CTRL+C`: 
 
-    [mapr@mapr-demo-2 frdo]$ ./frdo.sh gen
+    [mapr@mapr-demo-2 cluster]$ ./frdo.sh gen
     
 Finally, to stop generating data, shut down it down as so:
 
-    [mapr@mapr-demo-2 frdo]$ ./frdo.sh down
+    [mapr@mapr-demo-2 cluster]$ ./frdo.sh down
 
 ### Data consumption
 
 To demo the consumption part you first have to launch the FrDo app server:
 
-    [mapr@mapr-demo-2 frdo]$ ./frdo.sh run
+    [mapr@mapr-demo-2 cluster]$ ./frdo.sh run
 
 Then, to use the front-end launch a Web browser (tested under Chrome) and
 you should go to [mapr-demo-2:6996/](http://mapr-demo-2:6996/) where you

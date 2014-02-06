@@ -103,7 +103,11 @@ To hold the raw data and also to serve the app, you need to create a
 
     [root@mapr-demo-1 /] # maprcli volume create -name frdo -path /frdo -mount true
 
-This creates a volume called `frdo` and mounts it at `/mapr/frdo`.
+This creates a volume called `frdo` and mounts it at `/mapr/frdo`. To check how
+the volume is doing you can use the following command:
+
+    [root@mapr-demo-1 /] # maprcli volume info -name frdo -json
+
     
 ### 3. Mount MapR-FS
 

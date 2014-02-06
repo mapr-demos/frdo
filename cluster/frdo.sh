@@ -112,7 +112,7 @@ function gen_heatmap() {
   do
     # create a snapshot ...
     snapshot_name=$(date +"%Y-%m-%d_%H-%M-%S")
-    maprcli volume snapshot create -snapshotname $snapshot_name -volume $5
+    maprcli volume snapshot create -snapshotname $snapshot_name -volume $6
   
     # ... and then, after waiting 2 sec, just to be sure, generate the
     #    heatmap on the snapshotted directory

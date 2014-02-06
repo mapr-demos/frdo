@@ -1,5 +1,5 @@
 // constants
-var FRDO_BACKEND_URL = 'http://' + window.location.host  + '/';
+var FRDO_BACKEND_URL = 'http://' + window.location.host;
 var FRDO_TEST_HEATMAP = '/api/heatmap/test';
 var FRDO_HEATMAPS = '/api/heatmap';
 var FRDO_ALERTS = '/api/alerts'
