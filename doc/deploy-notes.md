@@ -49,6 +49,7 @@ To shut down the cluster (again on each node, starting with either 2 or 3):
 
 1. Install Hive
 1. Mount `/mapr` locally
+1. Prepare a volume for app
 1. Install demo software on cluster
 
 ### 1. Install Hive
@@ -92,9 +93,25 @@ And get rid of it again:
 
     [root@mapr-demo-1 /]# umount /mapr
 
-### 3. Install app on cluster
+
+### 3. Prepare a volume for app
+
+To hold the raw data and also to serve the app, you need to create a 
+[volume](http://doc.mapr.com/display/MapR/Managing+Data+with+Volumes) as so:
+
+    [root@mapr-demo-1 /] # maprcli volume create -name frdo -path /frdo -mount true
+  
+This creates a volume called `frdo` and mounts it at `/mapr/frdo`.
+
+### 4. Install app on cluster
 
 Get the content from both [gess](https://github.com/mhausenblas/gess) and
 [FrDO](https://github.com/mhausenblas/frdo). You can either copy locally using
 the NFS mount or freshly git clone the repos from one of the nodes into MapR-FS via
 a cluster NFS mount.
+
+Once you have everything downloaded, you might need to change settings in 
+[frdo.sh](../cluster/frdo.sh) to adapt paths such as the FrDO volume mount path
+or the gess install path to your environment.
+
+

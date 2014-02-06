@@ -37,7 +37,8 @@ HIVE_THRIFT_SERVER_HOST=localhost # set to hostname/IP the Hive metastore is on
 HIVE_THRIFT_SERVER_PORT=10000 # change if you serve metastore from non-default
 
 # MapR
-FRDO_DATA_VOLUME=frdo # create a volume and set volume name here (used for PP)
+FRDO_VOLUME=frdo # FrDO volume name (used for PP)
+FRDO_VOLUME_PATH=/mapr/frdo/ # FrDO volume mount path in the filesystem
 
 ############## APPLICATION ##############
 
@@ -48,9 +49,9 @@ GESS_IP=127.0.0.1 # on which node of the cluster gess runs
 
 # sisenik config
 SISENIK_SCRIPT=sisenik.py # typically no need to touch this
-SISENIK_PP=/tmp/sisenik/ # top-level input raw data directory (on frdo volume)
-HEATMAPS_DIR=../client/heatmaps/ # directory where heatmaps go (on frdo volume)
-ALERT_DOC=../client/alert.json # file where the alerts go (on frdo volume)
+SISENIK_PP=/mapr/frdo/tmp/sisenik/ # top-level raw data dir, on frdo volume
+HEATMAPS_DIR=../client/heatmaps/ # dir where heatmaps go, on frdo volume
+ALERT_DOC=../client/alert.json # file where the alerts go, on frdo volume
 
 # heatmap generator config
 HEATMAP_SCRIPT=heatmap.py # typically no need to touch this
@@ -117,7 +118,7 @@ function gen_heatmap() {
     #    heatmap on the snapshotted directory
     sleep 2
     snapshot_name=2014-02-03_21-44-30
-    python $HEATMAP_SCRIPT $1 $2 $3 $4 $snapshot_name
+    python $HEATMAP_SCRIPT $1 $2 $3 $4 $5 $snapshot_name
   done
 }
 
@@ -134,7 +135,7 @@ function serve_app() {
 case $1 in
  up )      launch_frdo $GESS_IP $SISENIK_PP $ALERT_DOC ;;
  down )    shutdown_frdo ;;
- gen )     gen_heatmap $SISENIK_PP $HEATMAPS_DIR $HIVE_THRIFT_SERVER_HOST $HIVE_THRIFT_SERVER_PORT $FRDO_DATA_VOLUME ;;
+ gen )     gen_heatmap $FRDO_VOLUME_PATH $SISENIK_PP $HEATMAPS_DIR $HIVE_THRIFT_SERVER_HOST $HIVE_THRIFT_SERVER_PORT $FRDO_VOLUME ;;
  run )     serve_app ;;
  * )       usage ; exit 1 ; ;;
 esac
