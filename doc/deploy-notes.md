@@ -1,4 +1,4 @@
-# Deployment Notes
+# Deployment notes
 
 ## Cluster layout
 
@@ -34,10 +34,16 @@ First on `mapr-demo-1`, to make sure CLDB master is running, then on all other n
 
     [root@mapr-demo-1 ~]# service mapr-warden start
     [root@mapr-demo-1 ~]# maprcli node cldbmaster
+    cldbmaster
+    ServerID: 6313779395051377157 HostName: mapr-demo-1
 
 Finally check if services are running on nodes, as per service layout above:
 
     [root@mapr-demo-1 ~]# maprcli node list -columns configuredservice,service
+    service                                                                  hostname     configuredservice                                                                 ip
+    tasktracker,cldb,fileserver,nfs,hoststats                                mapr-demo-1  tasktracker,cldb,fileserver,nfs,hoststats                                         172.16.191.127
+    fileserver,oozie,tasktracker,beeswax,webserver,hoststats,hue,jobtracker  mapr-demo-2  fileserver,hivemeta,oozie,tasktracker,beeswax,webserver,hoststats,hue,jobtracker  172.16.191.126
+    fileserver,httpfs,tasktracker,hoststats                                  mapr-demo-3  fileserver,oozie,httpfs,tasktracker,beeswax,hoststats,hue,jobtracker              172.16.191.125
 
 To shut down the cluster (again on each node, starting with either 2 or 3):
 
@@ -47,24 +53,59 @@ To shut down the cluster (again on each node, starting with either 2 or 3):
 
 ## Install dependencies and app
 
-1. Install Hive
-1. Mount `/mapr` locally
+1. Install Hive and Hiver
 1. Prepare a volume for app
+1. Mount `/mapr`
 1. Install demo software on cluster
 
-### 1. Install Hive
+### 1. Install Hive and Hiver
 
-On one node:
+On one node, say `mapr-demo-2`, install Hive and the Metastore (note: only works
+with Metastore not HiveServer2, for now, so if you have installed this, 
+deactivate it):
 
-    yum install mapr-hivemetastore
+    [root@mapr-demo-2 ~]# yum install mapr-hivemetastore
 
-And on this node also edit `/opt/mapr/conf/env.sh`:
+And further, on this node (`mapr-demo-2`) edit `/opt/mapr/conf/env.sh` to:
 
     export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.9.x86_64/jre
+
+Then `su mapr` and add this to `~/.bashrc`, needed for the Hive and the 
+[Hiver](https://github.com/tebeka/hiver) Python module:
+
     export HIVE_HOME=/opt/mapr/hive/hive-0.12
+    export PYTHONPATH=$PYTHONPATH:$HIVE_HOME/lib/py
+
+... and apply changes:
+
+    [mapr@mapr-demo-2 ~]$ source ~/.bashrc
+
+Now it's time to install the Hiver Python module:
+
+    [mapr@mapr-demo-2 ~]$ cd /tmp
+    [mapr@mapr-demo-2 tmp]$ git clone https://github.com/tebeka/hiver
+    [mapr@mapr-demo-2 tmp]$ cd hiver
+    [mapr@mapr-demo-2 tmp]$ python ./setup.py install
+
+... and check if it works:
+
+    [mapr@mapr-demo-2 tmp]$ echo 'import hiver' | python
+
+If you see no output here this means good news here. Otherwise, make sure you're
+using the right version of [Thrift for Python](http://thrift.apache.org/docs/BuildingFromSource/);
+you might need to build it from source.
 
 
-### 2. Mount MapR-FS locally
+### 2. Prepare a volume for app
+
+To hold the raw data and also to serve the app, you need to create a 
+[volume](http://doc.mapr.com/display/MapR/Managing+Data+with+Volumes) as so:
+
+    [root@mapr-demo-1 /] # maprcli volume create -name frdo -path /frdo -mount true
+
+This creates a volume called `frdo` and mounts it at `/mapr/frdo`.
+    
+### 3. Mount MapR-FS
 
 To determine which nodes are running the NFS gateway:
 
@@ -72,36 +113,25 @@ To determine which nodes are running the NFS gateway:
     id                   service                                    hostname     health  ip
     6313779395051377157  tasktracker,cldb,fileserver,nfs,hoststats  mapr-demo-1  0       172.16.191.127
 
-
-
-NOTE: currently only `sudo mount -o vers=3,nolock,hard mapr-demo-1:/mapr/MMDemo /mapr` works, check why.
-
-My config:
+My config (to make mount permanent):
 
     [root@mapr-demo-1 /]# cat /opt/mapr/conf/mapr_fstab
     mapr-demo-1:/mapr /mapr vers=3,nolock,hard
 
-Then, mount it (locally and in the cluster):
+To manually mount it (locally and in the cluster, as loopback):
 
     [~/tmp] $ sudo mount -o vers=3,nolock,hard mapr-demo-1:/mapr /mapr
 
-Check mounts:
+NOTE: currently only `sudo mount -o vers=3,nolock,hard mapr-demo-1:/mapr/MMDemo /mapr` works, check why.
+
+To check mounts use:
 
     [root@mapr-demo-1 /] # showmount -e
 
-And get rid of it again:
+And get rid of it again (after the demo):
 
     [root@mapr-demo-1 /]# umount /mapr
 
-
-### 3. Prepare a volume for app
-
-To hold the raw data and also to serve the app, you need to create a 
-[volume](http://doc.mapr.com/display/MapR/Managing+Data+with+Volumes) as so:
-
-    [root@mapr-demo-1 /] # maprcli volume create -name frdo -path /frdo -mount true
-  
-This creates a volume called `frdo` and mounts it at `/mapr/frdo`.
 
 ### 4. Install app on cluster
 
@@ -113,5 +143,3 @@ a cluster NFS mount.
 Once you have everything downloaded, you might need to change settings in 
 [frdo.sh](../cluster/frdo.sh) to adapt paths such as the FrDO volume mount path
 or the gess install path to your environment.
-
-
