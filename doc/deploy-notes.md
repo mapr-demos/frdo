@@ -10,16 +10,16 @@ For a quick demo, I've set up a local cluster using 3 VMs:
 
 And I've installed the services as follows:
 
-    | service    | mapr-demo-1 | mapr-demo-2 | mapr-demo-3 |
-    | ---------- | ------------| ------------| ------------|
-    | CLDB       |      x      |             |             |
-    | ZK         |      x      |      x      |      x      |
-    | NFS        |      x      |             |             |
-    | Webserver  |             |      x      |             |
-    | Fileserver |      x      |      x      |      x      |
-    | JT         |             |             |      x      |
-    | TT         |      x      |      x      |      x      |
-    | Metastore  |             |      x      |             |
+| service    | mapr-demo-1 | mapr-demo-2 | mapr-demo-3 |
+| ---------- | ------------| ------------| ------------|
+| CLDB       |      x      |             |             |
+| ZK         |      x      |      x      |      x      |
+| NFS        |      x      |             |             |
+| Webserver  |             |      x      |             |
+| Fileserver |      x      |      x      |      x      |
+| JT         |             |             |      x      |
+| TT         |      x      |      x      |      x      |
+| Metastore  |             |      x      |             |
 
 
 

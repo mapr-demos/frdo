@@ -147,7 +147,11 @@ that runs directly against the mounted cluster filesystem which in the vanilla H
 case would likely be realized via special connectors or exporting the resulting heat-maps.
 
 
-## License
+## Kudos and License
+
+I'd like to thank my colleague Andy Pernsteiner for test-driving this demo,
+providing very valuable feedback and bug fixes. Your time and dedication is
+very much appreciated, Andy!
 
 All software in this repository is available under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 and all other artifacts such as documentation or figures (drawings) are
