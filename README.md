@@ -16,6 +16,7 @@ The underlying ATM location data stems from the [OpenStreetMap](http://openstree
 * Python 2.7+
 * [heatmap.js](http://www.patrick-wied.at/static/heatmapjs/) for the WebUI (included in the client lib)
 * cluster of three or more physical or virtual machines (local sandbox or cloud deployment in GCE or EC2)
+* For the front-end, in order to work, you'll need an Internet connection (because of Google Maps)
 
 ### Deployment
 
@@ -83,6 +84,8 @@ you should go to [mapr-demo-2:6996/](http://mapr-demo-2:6996/) where you
 should see the following:
 
 ![FrDO WebUI screen shot](doc/frdo-webui-screenshot.png?raw=true)
+
+Note: in case you see a bank map, check if you're online, because of Google Maps.
 
 ## Architecture
 

@@ -67,16 +67,17 @@ function usage() {
 }
 
 function launch_frdo() {
-  echo 'Starting up FrDO:'
+  echo "FrDO :] Starting up ... "
   cur_dir=$PWD
   cd $GESS_DIR
   $GESS_SCRIPT start
   cd $cur_dir
   start_sisenik $1 $2 $3
+  echo "FrDO :] Starting up done. gess and Sisenik are running. Do ./frdo.sh gen now to generate heatmaps."
 }
 
 function shutdown_frdo() {
-  echo 'Shutting down FrDO:'
+  echo "FrDO :] Shutting down ... "
   cur_dir=$PWD
   cd $GESS_DIR
   $GESS_SCRIPT stop
@@ -86,6 +87,7 @@ function shutdown_frdo() {
   if [ -f nohup.out ]; then
     rm nohup.out
   fi
+  echo "FrDO :] Shutting down down."
 }
 
 function start_sisenik() {
@@ -105,24 +107,27 @@ function stop_sisenik() {
 }
 
 function gen_heatmap() {
-
-  echo "Press [CTRL+C] to stop heatmap generation."
+  echo "FrDO :] Starting heatmap generation ... "
+  echo "FrDO :] Press [CTRL+C] to stop heatmap generation."
 
   while true
   do
     # create a snapshot ...
     snapshot_name=$(date +"%Y-%m-%d_%H-%M-%S")
     maprcli volume snapshot create -snapshotname $snapshot_name -volume $6
+    echo "FrDO :] Created snapshot " $snapshot_name
   
     # ... and then, after waiting 2 sec, just to be sure, generate the
     #    heatmap on the snapshotted directory
     sleep 2
     snapshot_name=2014-02-03_21-44-30
     python $HEATMAP_SCRIPT $1 $2 $3 $4 $5 $snapshot_name
+    echo "FrDO :] Heatmap generated and added to " $3
   done
 }
 
 function serve_app() {
+  echo "FrDO :] Launching front-end ..."
   cur_dir=$PWD
   cd $APP_SERVER_DIR
   python $APP_SERVER_SCRIPT

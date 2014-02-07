@@ -95,6 +95,12 @@ If you see no output here this means good news here. Otherwise, make sure you're
 using the right version of [Thrift for Python](http://thrift.apache.org/docs/BuildingFromSource/);
 you might need to build it from source.
 
+Note: see [Managing Services on a Node](http://doc.mapr.com/display/MapR2/Managing+Services+on+a+Node)
+to remove a service from a node like so:
+
+    [root@mapr-demo-2 ~]# maprcli node services -hivemeta stop -nodes mapr-demo-2
+    [root@mapr-demo-2 ~]# yum remove mapr-hivemetastore
+    [root@mapr-demo-2 ~]# configure.sh -R 
 
 ### 2. Prepare a volume for app
 
