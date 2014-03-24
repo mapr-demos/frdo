@@ -87,7 +87,7 @@ function shutdown_frdo() {
   if [ -f nohup.out ]; then
     rm nohup.out
   fi
-  echo "FrDO :] Shutting down down."
+  echo "FrDO :] Shutting down."
 }
 
 function start_sisenik() {
@@ -120,7 +120,6 @@ function gen_heatmap() {
     # ... and then, after waiting 2 sec, just to be sure, generate the
     #    heatmap on the snapshotted directory
     sleep 2
-    snapshot_name=2014-02-03_21-44-30
     python $HEATMAP_SCRIPT $1 $2 $3 $4 $5 $snapshot_name
     echo "FrDO :] Heatmap generated and added to " $3
   done
